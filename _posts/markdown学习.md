@@ -1,6 +1,6 @@
 # **`自我学习markdown文档**
 
-
+**注：此文档由于编辑器排版和功能等原因有些内容尚不完善，后续会进行修改，本文档纯个人学习使用，仅供参考**
 
 
 # 一、基础语法
@@ -219,15 +219,15 @@ $$
 
 ### 2.3.1 编辑文本
 
-![](C:\Users\1\AppData\Roaming\Typora\typora-user-images\image-20250723232639108.png)
+<img width="944" height="406" alt="编辑文本" src="https://github.com/user-attachments/assets/4dcace73-8770-4417-b94b-b4adb21a1c09" />
 
 ### 2.3.2 设置标题
 
-![image-20250723232736485](C:\Users\1\AppData\Roaming\Typora\typora-user-images\image-20250723232736485.png)
+<img width="1421" height="618" alt="设置标题" src="https://github.com/user-attachments/assets/14564773-8434-470b-9f91-211d7d4878aa" />
 
 ### 2.3.3 列表
 
-![image-20250723232939167](C:\Users\1\AppData\Roaming\Typora\typora-user-images\image-20250723232939167.png)
+<img width="1423" height="436" alt="列表" src="https://github.com/user-attachments/assets/5751d261-f61d-443a-9221-b0cc6cc7460c" />
 
 ### 2.3.4 其他常用快捷键
 
