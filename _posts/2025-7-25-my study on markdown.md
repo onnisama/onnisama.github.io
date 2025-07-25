@@ -1,4 +1,12 @@
-# **自我学习markdown文档**
+---
+layout:       post
+title:        "**自我学习markdown文档**"
+author:       "雾汐"
+header-style: text
+catalog:      true
+tags:
+    - Markdown
+---
 
 **注：此文档由于编辑器排版和功能等原因有些内容尚不完善，后续会进行修改，本文档纯个人学习使用，仅供参考**
 
