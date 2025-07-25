@@ -2,7 +2,6 @@
 
 
 
-[toc]
 
 # 一、基础语法
 
@@ -78,9 +77,7 @@ footnote[^脚注]
 - [x] 已完成
 - [ ] 未完成3
 
-### 1.2.4 目录
 
-\[toc]
 
 
 
@@ -88,7 +85,8 @@ footnote[^脚注]
 
 ### 1.3.1 图片
 
-![](C:\Users\1\Desktop\git-test\background.jpg)
+![background](https://github.com/user-attachments/assets/0624e86d-fde1-480d-b3b2-871dda8a3be3)
+
 
 ### 1.3.2 链接
 
