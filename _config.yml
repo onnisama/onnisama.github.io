@@ -72,8 +72,7 @@ ga_domain: huangxuan.me
 # Sidebar settings
 sidebar: true # whether or not using Sidebar.
 sidebar-about-description: "千里の道も一歩より"
-sidebar-avatar: img/my-avatar.jpg # use absolute URL, seeing it's used in both `/` and `/about/`
-#https://github.com/Huxpro.png
+sidebar-avatar: https://github.com/onnisama.png # use absolute URL, seeing it's used in both `/` and `/about/`
 
 # Featured Tags
 # featured-tags: true # whether or not using Feature-Tags
