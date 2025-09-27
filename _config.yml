@@ -72,12 +72,12 @@ ga_domain: huangxuan.me
 # Sidebar settings
 sidebar: true # whether or not using Sidebar.
 sidebar-about-description: "千里の道も一歩より"
-sidebar-avatar: img/post-sample-image.jpg # use absolute URL, seeing it's used in both `/` and `/about/`
+sidebar-avatar: img/my-avatar.jpg # use absolute URL, seeing it's used in both `/` and `/about/`
 #https://github.com/Huxpro.png
 
 # Featured Tags
-featured-tags: true # whether or not using Feature-Tags
-featured-condition-size: 1 # A tag will be featured if the size of it is more than this condition value
+# featured-tags: true # whether or not using Feature-Tags
+# featured-condition-size: 1 # A tag will be featured if the size of it is more than this condition value
 
 # Progressive Web Apps
 chrome-tab-theme-color: "#000000"
