@@ -90,7 +90,7 @@ footnote[^脚注]
 
 ### 1.3.1 图片
 
-![background](../img/my-study-on-markdown/background.jpg)
+![background](https://onnisama.github.io/img/my-study-on-markdown/background.jpg)
 
 
 ### 1.3.2 链接
