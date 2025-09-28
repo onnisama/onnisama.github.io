@@ -90,7 +90,7 @@ footnote[^脚注]
 
 ### 1.3.1 图片
 
-![background](https://github.com/user-attachments/assets/0624e86d-fde1-480d-b3b2-871dda8a3be3)
+![background](../img/my-study-on-markdown/background.jpg)
 
 
 ### 1.3.2 链接
@@ -224,15 +224,16 @@ $$
 
 ### 2.3.1 编辑文本
 
-<img width="944" height="406" alt="编辑文本" src="https://github.com/user-attachments/assets/4dcace73-8770-4417-b94b-b4adb21a1c09" />
+![edit](../img/my-study-on-markdown/edit.png)
 
 ### 2.3.2 设置标题
 
-<img width="1421" height="618" alt="设置标题" src="https://github.com/user-attachments/assets/14564773-8434-470b-9f91-211d7d4878aa" />
+![title](../img/my-study-on-markdown/title.png)
+
 
 ### 2.3.3 列表
 
-<img width="1423" height="436" alt="列表" src="https://github.com/user-attachments/assets/5751d261-f61d-443a-9221-b0cc6cc7460c" />
+![list](../img/my-study-on-markdown/list.png)
 
 ### 2.3.4 其他常用快捷键
 
