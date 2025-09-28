@@ -5,7 +5,6 @@ author:       "雾汐(低配版)"
 header-style: text
 catalog:      true
 tags:
-    - Markdown
     - 诗词
 ---
 
