@@ -224,16 +224,16 @@ $$
 
 ### 2.3.1 编辑文本
 
-![edit](../img/my-study-on-markdown/edit.png)
+![edit](https://onnisama.github.io/img/my-study-on-markdown/edit.png)
 
 ### 2.3.2 设置标题
 
-![title](../img/my-study-on-markdown/title.png)
+![title](https://onnisama.github.io/img/my-study-on-markdown/title.png)
 
 
 ### 2.3.3 列表
 
-![list](../img/my-study-on-markdown/list.png)
+![list](https://onnisama.github.io/img/my-study-on-markdown/list.png)
 
 ### 2.3.4 其他常用快捷键
 
