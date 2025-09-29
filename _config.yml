@@ -5,7 +5,7 @@ header-img: img/home-bg.jpg
 email: 3204096434@qq.com
 description: "这里是 @雾汐 ————一位大学生的个人生活学习记录"
 keyword: "雾汐、大学生、生活、学习、芝士雾汐"
-url: "https://onnisama.me" # your host, for absolute URL
+url: "https://onnisama.github.io" # your host, for absolute URL
 baseurl: "" # for example, '/blog' if your blog hosted on 'host/blog'
 
 # Publish posts or collection documents with a future date.
@@ -56,7 +56,7 @@ kramdown:
       start_line: 1
 
 # Disqus settings
-disqus_username: onnisama
+disqus_username: 雾汐
 
 # Netease settings
 netease_comment: false
