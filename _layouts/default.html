@@ -6,12 +6,358 @@
 <!-- hack iOS CSS :active style -->
 <body ontouchstart="">
 
-    {% include nav.html %}
-    {% include search.html %}
+        {% include nav.html %}
+        {% include search.html %}
 
-    {{ content }}
+        <div id="pjax-root">
+            {{ content }}
+        </div>
 
-    {% include footer.html %}
+        {% include footer.html %}
+
+        <style>
+            .global-music-mini {
+                position: fixed;
+                left: 20px;
+                bottom: 20px;
+                display: flex;
+                align-items: center;
+                gap: 14px;
+                padding: 14px 18px;
+                border-radius: 20px;
+                min-width: 260px;
+                max-width: 360px;
+                backdrop-filter: blur(12px);
+                background: rgba(15, 26, 61, 0.45);
+                box-shadow: 0 14px 32px rgba(0,0,0,0.28);
+                color: #fdfdfd;
+                z-index: 1200;
+                cursor: pointer;
+                overflow: hidden;
+            }
+
+            .global-music-mini::before {
+                content: "";
+                position: absolute;
+                inset: 0;
+                background: linear-gradient(120deg, #88b1ff, #7cd6ff);
+                z-index: -1;
+                transition: 0.3s;
+                opacity: 0.9;
+            }
+
+            .global-music-mini:hover::before {
+                background: linear-gradient(120deg, #66a6ff, #89f7fe);
+            }
+
+            .global-music-cover {
+                width: 64px;
+                height: 64px;
+                border-radius: 50%;
+                object-fit: cover;
+                border: 4px solid rgba(255, 255, 255, 0.7);
+                box-shadow: 0 0 12px rgba(255, 255, 255, 0.4);
+                flex-shrink: 0;
+            }
+
+            .global-music-mini button {
+                border: none;
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                background: rgba(255,255,255,0.9);
+                color: #0f1a3d;
+                font-weight: 700;
+                font-size: 15px;
+                box-shadow: 0 6px 14px rgba(0,0,0,0.25);
+                transition: transform 0.2s ease;
+                flex-shrink: 0;
+            }
+
+            .global-music-mini button:hover {
+                transform: translateY(-2px);
+            }
+
+            .global-music-mini .gm-text {
+                display: flex;
+                flex-direction: column;
+                line-height: 1.25;
+                text-shadow: 0 2px 6px rgba(0,0,0,0.25);
+            }
+
+            .global-music-mini .gm-label {
+                font-size: 12px;
+                letter-spacing: 0.6px;
+                opacity: 0.95;
+            }
+
+            .global-music-mini .gm-title {
+                font-size: 16px;
+                font-weight: 800;
+            }
+
+            .global-music-mini .gm-artist {
+                font-size: 13px;
+                color: #f7f9ff;
+                opacity: 0.96;
+            }
+        </style>
+
+        <script>
+            (function () {
+                const STORAGE_KEY = 'globalMusicState';
+                const DAILY_KEY = 'globalMusicDaily';
+                const TRACKS = [
+                    {
+                        title: '园游会',
+                        artist: '周杰伦',
+                        src: 'https://onnisama.github.io/audio/Carnival.mp3',
+                        cover: 'https://onnisama.github.io/img/music/Qilixiang.jpg',
+
+                        title: '反方向的钟',
+                        artist: '周杰伦',
+                        src: 'https://onnisama.github.io/audio/Clock.mp3',
+                        cover: 'https://onnisama.github.io/img/music/Jay.png',
+
+                        title: '以父之名',
+                        artist: '周杰伦',
+                        src: 'https://onnisama.github.io/audio/Father.mp3',
+                        cover: 'https://onnisama.github.io/img/music/Yehuimei.png',
+
+                        title: '七里香',
+                        artist: '周杰伦',
+                        src: 'https://onnisama.github.io/audio/Frangrance.mp3',
+                        cover: 'https://onnisama.github.io/img/music/Qilixiang.jpg'
+                        
+                        // title: '歌名',
+                        // artist: '歌手',
+                        // src: 'https://onnisama.github.io/audio/YourSong.mp3',
+                        // cover: 'https://onnisama.github.io/img/music/YourSong.jpg'
+                    }
+                ];
+
+                function todayKey() {
+                    return new Date().toISOString().slice(0, 10);
+                }
+
+                function pickDailyTrack() {
+                    const today = todayKey();
+                    let savedDaily = null;
+                    try { savedDaily = JSON.parse(localStorage.getItem(DAILY_KEY) || 'null'); } catch (e) { savedDaily = null; }
+                    if (savedDaily && savedDaily.date === today && savedDaily.track) {
+                        return savedDaily.track;
+                    }
+                    const choice = TRACKS[Math.floor(Math.random() * TRACKS.length)] || TRACKS[0];
+                    const payload = { date: today, track: choice };
+                    localStorage.setItem(DAILY_KEY, JSON.stringify(payload));
+                    return choice;
+                }
+
+                function saveState(audio, meta, override = {}) {
+                    try {
+                        const state = {
+                            src: audio.currentSrc || audio.src,
+                            time: audio.currentTime || 0,
+                            paused: audio.paused,
+                            title: meta?.title || audio.dataset.musicTitle || '',
+                            artist: meta?.artist || audio.dataset.musicArtist || '',
+                            cover: meta?.cover || audio.dataset.musicCover || '',
+                            date: override.date || meta?.date || audio.dataset.musicDate || todayKey()
+                        };
+                        Object.assign(state, override);
+                        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+                    } catch (e) {
+                        console.warn('Music state save failed', e);
+                    }
+                }
+
+                function attachPersist(audio, meta, override) {
+                    const handler = () => saveState(audio, meta, override);
+                    audio.addEventListener('timeupdate', handler);
+                    audio.addEventListener('play', handler);
+                    audio.addEventListener('pause', handler);
+                    window.addEventListener('beforeunload', handler);
+                    // Initial save to seed state when user has not interacted yet
+                    saveState(audio, meta, override);
+                }
+
+                function spawnMiniPlayer(state) {
+                    if (!state || !state.src) return;
+                    const container = document.createElement('div');
+                    container.className = 'global-music-mini';
+                    container.innerHTML = `
+                        <img class="global-music-cover" src="${state.cover || 'https://onnisama.github.io/img/music/Carnival.jpg'}" alt="今日单曲">
+                        <button type="button" aria-label="toggle music"></button>
+                        <div class="gm-text">
+                            <span class="gm-label">今日单曲</span>
+                            <span class="gm-title">${state.title || '音乐播放'}</span>
+                            <span class="gm-artist">${state.artist || ''}</span>
+                        </div>
+                    `;
+                    document.body.appendChild(container);
+
+                    const btn = container.querySelector('button');
+                    const audio = new Audio(state.src);
+                    let pendingSeek = state.time || 0;
+
+                    function syncButton() {
+                        btn.textContent = audio.paused ? '▶' : '❚❚';
+                    }
+
+                    audio.addEventListener('play', () => { syncButton(); saveState(audio, state); });
+                    audio.addEventListener('pause', () => { syncButton(); saveState(audio, state); });
+                    audio.addEventListener('timeupdate', () => saveState(audio, state));
+                    window.addEventListener('beforeunload', () => saveState(audio, state));
+
+                    audio.addEventListener('loadedmetadata', () => {
+                        if (pendingSeek > 0 && pendingSeek < audio.duration) {
+                            audio.currentTime = pendingSeek;
+                        }
+                    });
+
+                    if (!state.paused) {
+                        audio.play().catch(() => {});
+                    }
+
+                    btn.addEventListener('click', () => {
+                        if (audio.paused) {
+                            audio.play().catch(() => {});
+                        } else {
+                            audio.pause();
+                        }
+                    });
+
+                    syncButton();
+                }
+
+                function loadSavedState() {
+                    try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null'); } catch (e) { return null; }
+                }
+
+                function persistState(state) {
+                    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) { console.warn(e); }
+                }
+
+                const today = todayKey();
+                const todayTrack = pickDailyTrack();
+                const saved = loadSavedState();
+
+                // If跨天或没有记录，则换今日单曲
+                const state = (saved && saved.src && saved.date === today)
+                    ? saved
+                    : { src: todayTrack.src, time: 0, paused: true, title: todayTrack.title, artist: todayTrack.artist, cover: todayTrack.cover, date: today };
+
+                persistState(state);
+
+                // Prefer page-scoped player if present
+                const pageAudio = document.querySelector('[data-global-music]');
+                if (pageAudio) {
+                    if (!pageAudio.src) pageAudio.src = state.src;
+                    pageAudio.dataset.musicTitle = state.title || '';
+                    pageAudio.dataset.musicArtist = state.artist || '';
+                    pageAudio.dataset.musicCover = state.cover || '';
+                    pageAudio.dataset.musicDate = state.date || today;
+
+                    attachPersist(pageAudio, state, { date: state.date });
+                    if (state.time) pageAudio.currentTime = state.time;
+                    if (state.paused === false) pageAudio.play().catch(() => {});
+                } else {
+                    // No page player: bring back a mini player using last state
+                    if (state && state.src) {
+                        spawnMiniPlayer(state);
+                    }
+                }
+
+                // 每分钟检查跨天，跨天后切换到新的今日单曲
+                setInterval(() => {
+                    const nowKey = todayKey();
+                    const current = loadSavedState();
+                    if (!current || current.date === nowKey) return;
+                    const nextTrack = pickDailyTrack();
+                    const nextState = { src: nextTrack.src, time: 0, paused: true, title: nextTrack.title, artist: nextTrack.artist, cover: nextTrack.cover, date: nowKey };
+                    persistState(nextState);
+                    window.location.reload();
+                }, 60000);
+            })();
+        </script>
+
+        <script>
+            // Lightweight PJAX to keep global audio alive across pages
+            (function () {
+                const root = document.getElementById('pjax-root');
+                if (!root) return;
+
+                function sameOrigin(url) {
+                    try {
+                        const u = new URL(url, window.location.origin);
+                        return u.origin === window.location.origin;
+                    } catch (e) {
+                        return false;
+                    }
+                }
+
+                function executeScripts(fragment) {
+                    const scripts = fragment.querySelectorAll('script');
+                    scripts.forEach((oldScript) => {
+                        const s = document.createElement('script');
+                        if (oldScript.src) {
+                            s.src = oldScript.src;
+                        } else {
+                            s.textContent = oldScript.textContent;
+                        }
+                        document.body.appendChild(s);
+                    });
+                }
+
+                async function load(url, replaceState = false) {
+                    try {
+                        const res = await fetch(url, { headers: { 'X-PJAX': 'true' } });
+                        if (!res.ok) throw new Error('HTTP ' + res.status);
+                        const text = await res.text();
+                        const doc = new DOMParser().parseFromString(text, 'text/html');
+                        const nextRoot = doc.getElementById('pjax-root');
+                        if (!nextRoot) throw new Error('No pjax-root');
+
+                        // Update content
+                        root.innerHTML = nextRoot.innerHTML;
+
+                        // Update title
+                        const title = doc.querySelector('title');
+                        if (title) document.title = title.textContent;
+
+                        // Run scripts inside new content
+                        executeScripts(nextRoot);
+
+                        // Update history
+                        const method = replaceState ? 'replaceState' : 'pushState';
+                        window.history[method]({}, '', url);
+
+                        // Scroll to top for new view
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                    } catch (e) {
+                        console.warn('PJAX failed, falling back', e);
+                        window.location.href = url;
+                    }
+                }
+
+                function onLinkClick(event) {
+                    const link = event.target.closest('a');
+                    if (!link) return;
+                    if (link.target && link.target !== '_self') return;
+                    if (link.hasAttribute('download')) return;
+                    const href = link.getAttribute('href');
+                    if (!href || href.startsWith('#')) return;
+                    if (!sameOrigin(href)) return;
+
+                    event.preventDefault();
+                    const url = new URL(href, window.location.origin).toString();
+                    load(url);
+                }
+
+                window.addEventListener('popstate', () => load(window.location.href, true));
+                document.addEventListener('click', onLinkClick);
+            })();
+        </script>
 
 
 <!-- Image to hack wechat -->
