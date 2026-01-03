@@ -34,6 +34,54 @@
                 z-index: 1200;
                 cursor: pointer;
                 overflow: hidden;
+                transition: all 0.3s ease;
+            }
+
+            .global-music-mini.minimized {
+                min-width: auto;
+                max-width: auto;
+                padding: 4px;
+                gap: 0;
+                border-radius: 50%;
+                width: 52px;
+                height: 52px;
+            }
+
+            .global-music-mini.minimized .gm-text,
+            .global-music-mini.minimized .gm-play-btn,
+            .global-music-mini.minimized .gm-close {
+                display: none;
+            }
+
+            .global-music-mini.minimized .global-music-cover {
+                width: 44px;
+                height: 44px;
+                border-width: 2px;
+            }
+
+            .gm-close {
+                position: absolute;
+                top: 8px;
+                right: 8px;
+                width: 24px;
+                height: 24px;
+                border-radius: 50%;
+                background: rgba(255, 255, 255, 0.3);
+                border: none;
+                color: white;
+                font-size: 14px;
+                font-weight: bold;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.2s ease;
+                z-index: 10;
+            }
+
+            .gm-close:hover {
+                background: rgba(255, 255, 255, 0.5);
+                transform: rotate(90deg);
             }
 
             .global-music-mini::before {
@@ -60,7 +108,7 @@
                 flex-shrink: 0;
             }
 
-            .global-music-mini button {
+            .gm-play-btn {
                 border: none;
                 width: 40px;
                 height: 40px;
@@ -72,9 +120,11 @@
                 box-shadow: 0 6px 14px rgba(0,0,0,0.25);
                 transition: transform 0.2s ease;
                 flex-shrink: 0;
+                margin-left: auto;
+                margin-right: 25px;
             }
 
-            .global-music-mini button:hover {
+            .gm-play-btn:hover {
                 transform: translateY(-2px);
             }
 
@@ -229,20 +279,25 @@
 
                 function spawnMiniPlayer(state) {
                     if (!state || !state.src) return;
+
+                    const existing = document.querySelector('.global-music-mini');
+                    if (existing) existing.remove();
+
                     const container = document.createElement('div');
                     container.className = 'global-music-mini';
                     container.innerHTML = `
+                        <button type="button" class="gm-close" aria-label="minimize player">×</button>
                         <img class="global-music-cover" src="${state.cover || 'https://onnisama.github.io/img/music/Carnival.jpg'}" alt="今日单曲">
-                        <button type="button" aria-label="toggle music"></button>
                         <div class="gm-text">
                             <span class="gm-label">今日单曲</span>
                             <span class="gm-title">${state.title || '音乐播放'}</span>
                             <span class="gm-artist">${state.artist || ''}</span>
                         </div>
+                        <button type="button" class="gm-play-btn" aria-label="toggle music"></button>
                     `;
                     document.body.appendChild(container);
 
-                    const btn = container.querySelector('button');
+                    const btn = container.querySelector('.gm-play-btn');
                     const audio = new Audio(state.src);
                     let pendingSeek = state.time || 0;
 
@@ -265,11 +320,24 @@
                         audio.play().catch(() => {});
                     }
 
-                    btn.addEventListener('click', () => {
+                    btn.addEventListener('click', (e) => {
+                        e.stopPropagation();
                         if (audio.paused) {
                             audio.play().catch(() => {});
                         } else {
                             audio.pause();
+                        }
+                    });
+
+                    const closeBtn = container.querySelector('.gm-close');
+                    closeBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        container.classList.add('minimized');
+                    });
+
+                    container.addEventListener('click', () => {
+                        if (container.classList.contains('minimized')) {
+                            container.classList.remove('minimized');
                         }
                     });
 
