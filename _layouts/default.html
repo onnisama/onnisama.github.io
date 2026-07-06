@@ -403,10 +403,51 @@
 
                 function sameOrigin(url) {
                     try {
-                        const u = new URL(url, window.location.origin);
+                        const u = new URL(url, window.location.href);
                         return u.origin === window.location.origin;
                     } catch (e) {
                         return false;
+                    }
+                }
+
+                function getUrl(url) {
+                    try {
+                        return new URL(url, window.location.href);
+                    } catch (e) {
+                        return null;
+                    }
+                }
+
+                function isSamePageHashLink(href) {
+                    const url = getUrl(href);
+                    return !!(
+                        url &&
+                        url.origin === window.location.origin &&
+                        url.pathname === window.location.pathname &&
+                        url.search === window.location.search &&
+                        url.hash
+                    );
+                }
+
+                function findHashTarget(hash) {
+                    if (!hash) return null;
+
+                    try {
+                        return document.getElementById(decodeURIComponent(hash.slice(1)));
+                    } catch (e) {
+                        return document.getElementById(hash.slice(1));
+                    }
+                }
+
+                function scrollAfterLoad(url) {
+                    const nextUrl = getUrl(url);
+                    const target = nextUrl && findHashTarget(nextUrl.hash);
+
+                    if (target) {
+                        const top = target.getBoundingClientRect().top + window.pageYOffset - 80;
+                        window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+                    } else {
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
                     }
                 }
 
@@ -446,8 +487,7 @@
                         const method = replaceState ? 'replaceState' : 'pushState';
                         window.history[method]({}, '', url);
 
-                        // Scroll to top for new view
-                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                        scrollAfterLoad(url);
                     } catch (e) {
                         console.warn('PJAX failed, falling back', e);
                         window.location.href = url;
@@ -461,6 +501,7 @@
                     if (link.hasAttribute('download')) return;
                     const href = link.getAttribute('href');
                     if (!href || href.startsWith('#')) return;
+                    if (isSamePageHashLink(href)) return;
                     if (!sameOrigin(href)) return;
 
                     event.preventDefault();
