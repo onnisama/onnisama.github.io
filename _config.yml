@@ -22,12 +22,19 @@ permalink: pretty
 paginate: 10
 exclude:
   [
+    ".agents",
+    ".codex",
+    ".playwright-mcp",
+    "*.log",
     "less",
     "node_modules",
     "Gruntfile.js",
     "package.json",
+    "package-lock.json",
+    "Rakefile",
     "README.md",
     "README.zh.md",
+    "src",
   ]
 anchorjs: true # if you want to customize anchor. check out line:181 of `post.html`
 # If you have timezone issue (e.g. #68) in China, uncomment to use this:

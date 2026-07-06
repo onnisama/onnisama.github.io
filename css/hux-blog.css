@@ -1694,3 +1694,142 @@ img::-moz-selection {
 .no-scroll {
   overflow-y: hidden;
 }
+
+/* Light code block override for article readability */
+.highlight,
+pre.highlight {
+  background: #f7f8fb;
+  color: #24292f;
+}
+.highlight pre,
+.highlight .hll {
+  background: #f7f8fb;
+}
+.highlight .c,
+.highlight .cm,
+.highlight .cp,
+.highlight .c1,
+.highlight .cs {
+  color: #6e7781;
+  font-style: italic;
+}
+.highlight .err {
+  color: #cf222e;
+  background-color: #ffebe9;
+}
+.language-coq .highlight .err {
+  background-color: transparent;
+}
+.highlight .k,
+.highlight .kc,
+.highlight .kd,
+.highlight .kn,
+.highlight .kp,
+.highlight .kr,
+.highlight .kt,
+.highlight .ow {
+  color: #cf222e;
+  font-weight: 600;
+}
+.highlight .l,
+.highlight .m,
+.highlight .mf,
+.highlight .mh,
+.highlight .mi,
+.highlight .mo,
+.highlight .il {
+  color: #0550ae;
+}
+.highlight .s,
+.highlight .ld,
+.highlight .sb,
+.highlight .sc,
+.highlight .sd,
+.highlight .s2,
+.highlight .se,
+.highlight .sh,
+.highlight .si,
+.highlight .sx,
+.highlight .s1 {
+  color: #0a3069;
+}
+.highlight .na,
+.highlight .nb,
+.highlight .nc,
+.highlight .no,
+.highlight .nd,
+.highlight .ni,
+.highlight .ne,
+.highlight .nl,
+.highlight .py,
+.highlight .nv,
+.highlight .bp,
+.highlight .vc,
+.highlight .vg {
+  color: #8250df;
+}
+.highlight .nf,
+.highlight .nx,
+.highlight .nt,
+.highlight .vi,
+.highlight .ss,
+.highlight .sr {
+  color: #116329;
+}
+.highlight .o,
+.highlight .p,
+.highlight .n,
+.highlight .nn {
+  color: #24292f;
+}
+.highlight .w {
+  color: #57606a;
+}
+.highlight .gu {
+  color: #6e7781;
+}
+.highlight .gd {
+  color: #cf222e;
+}
+.highlight .gi {
+  color: #116329;
+}
+.highlighter-rouge .highlight {
+  margin: 24px 0;
+  border: 1px solid #d8dee4;
+  border-radius: 8px;
+  background: #f7f8fb;
+  box-shadow: 0 8px 24px rgba(140, 149, 159, 0.16);
+  overflow: hidden;
+}
+.highlighter-rouge .highlight pre {
+  color: #24292f;
+  font-size: 14px;
+  line-height: 1.65;
+}
+.highlighter-rouge .highlight .rouge-code pre {
+  color: #24292f;
+}
+.highlighter-rouge .highlight .lineno {
+  color: #8c959f;
+}
+.highlighter-rouge .highlight table > tbody > tr > td > pre {
+  padding: 16px 18px;
+}
+.post-container code:not(pre code) {
+  color: #0969da;
+  background: #f1f6ff;
+  border: 1px solid #dbeafe;
+  border-radius: 4px;
+  padding: 0.12em 0.35em;
+}
+@media (max-width: 480px) {
+  .highlighter-rouge .highlight {
+    margin-left: 0;
+    margin-right: 0;
+    border-radius: 8px;
+  }
+  .highlighter-rouge .highlight table > tbody > tr > td > pre {
+    padding: 14px 12px;
+  }
+}
