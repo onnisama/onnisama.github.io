@@ -2,7 +2,9 @@
 Credits: this script is shamelessly borrowed from
 https://github.com/kitian616/jekyll-TeXt-theme
 */
-(function() {
+(function(window, $) {
+  if (!$) return;
+
   function queryString() {
     // This function is anonymous, is executed immediately and
     // the return value is assigned to QueryString!
@@ -26,8 +28,8 @@ https://github.com/kitian616/jekyll-TeXt-theme
   }
 
   var setUrlQuery = (function() {
-    var baseUrl =  window.location.href.split('?')[0];
     return function(query) {
+      var baseUrl = window.location.href.split('?')[0];
       if (typeof query === 'string') {
         window.history.replaceState(null, '', baseUrl + query);
       } else {
@@ -36,13 +38,25 @@ https://github.com/kitian616/jekyll-TeXt-theme
     };
   })();
 
-  $(document).ready(function() {
+  function applyTagCloud() {
+    if (!$.fn.tagcloud) return;
+
+    $.fn.tagcloud.defaults = {
+      color: { start: '#bbbbee', end: '#2f93b4' }
+    };
+    $('#tag_cloud a').tagcloud();
+  }
+
+  window.initArchivePage = function() {
     var $tags = $('.js-tags');
     var $articleTags = $tags.find('.tag-button');
     var $tagShowAll = $tags.find('.tag-button--all');
     var $result = $('.js-result');
     var $sections = $result.find('section');
-    var sectionArticles = []
+
+    if (!$tags.length || !$result.length) return;
+
+    var sectionArticles = [];
     var $lastFocusButton = null;
     var sectionTopArticleIndex = [];
     var hasInit = false;
@@ -134,10 +148,13 @@ https://github.com/kitian616/jekyll-TeXt-theme
 
     init(); 
     tagSelect(_tag);
+    applyTagCloud();
 
-    $tags.on('click', 'a', function() {   /* only change */
+    $tags.off('click.archivePage').on('click.archivePage', 'a', function(e) {   /* only change */
+      e.preventDefault();
       tagSelect($(this).data('encode'), $(this));
     });
+  };
 
-  });
-})();
+  $(document).ready(window.initArchivePage);
+})(window, window.jQuery);
