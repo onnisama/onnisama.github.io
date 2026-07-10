@@ -32,9 +32,10 @@ description: "按时间与标签翻看过去的记录。"
 
             {% assign year = article.date | date: '%Y' %}
             {% if year != current_year %}
-                {% unless forloop.first %}</div>{% endunless %}
+                {% unless forloop.first %}</div></div>{% endunless %}
                 <div class="archive-year">
                     <h2>{{ year }}</h2>
+                    <div class="archive-year__items">
                 {% assign current_year = year %}
             {% endif %}
 
@@ -42,7 +43,7 @@ description: "按时间与标签翻看过去的记录。"
                 <time datetime="{{ article.date | date_to_xmlschema }}">{{ article.date | date: '%m.%d' }}</time>
                 <a href="{{ article.url | prepend: site.baseurl }}">{{ article.title }}</a>
             </article>
-            {% if forloop.last %}</div>{% endif %}
+            {% if forloop.last %}</div></div>{% endif %}
         {% endfor %}
     </div>
 </section>

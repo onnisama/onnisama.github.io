@@ -409,6 +409,7 @@ img { max-width: 100%; height: auto; }
 .archive-year { display: grid; grid-template-columns: 74px 1fr; align-items: start; }
 .archive-year + .archive-year { margin-top: 24px; }
 .archive-year > h2 { position: sticky; top: 30px; margin: 5px 0 0; color: var(--warm); font-family: var(--serif); font-size: 18px; font-weight: 500; }
+.archive-year__items { min-width: 0; }
 .archive-item { display: grid; grid-template-columns: 54px minmax(0, 1fr); gap: 14px; align-items: baseline; padding: 9px 0; border: 0; }
 .archive-item time { color: var(--muted); font-size: 11px; }
 .archive-item a { color: var(--ink); font-family: var(--serif); font-size: 15px; text-decoration: none; }
