@@ -171,6 +171,10 @@ img { max-width: 100%; height: auto; }
 .rail-links a[aria-current="page"] { padding-left: 12px; color: var(--accent); text-decoration: none; }
 .rail-links small { color: var(--muted); font-size: 11px; font-weight: 400; }
 .rail-github { display: inline-block; margin-left: 8px; color: var(--ink-soft); font-size: 12px; text-decoration: none; }
+.rail-friends { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--line-soft); display: flex; flex-wrap: wrap; gap: 6px; }
+.rail-friends__label { display: block; width: 100%; font-size: 11px; font-weight: 650; color: var(--muted); letter-spacing: .04em; text-transform: uppercase; margin-bottom: 2px; }
+.rail-friends__link { display: inline-block; font-size: 12px; color: var(--ink-soft); text-decoration: none; padding: 2px 8px; border: 1px solid var(--line-soft); border-radius: 4px; transition: color .16s ease, border-color .16s ease; }
+.rail-friends__link:hover { color: var(--accent); border-color: var(--accent); text-decoration: none; }
 
 /* Main paper */
 .paper {
@@ -588,7 +592,7 @@ img { max-width: 100%; height: auto; }
   .rail-search, .rail-menu { display: block; width: 44px; height: 44px; }
   .rail-panel { position: absolute; left: 12px; right: 12px; top: 68px; margin: 0; padding: 8px 16px 14px; border-radius: 10px; box-shadow: 0 16px 44px rgba(43,43,39,.14); }
   .rail-panel:not(.is-open) { display: none; }
-  .rail-profile, .rail-status, .rail-github { display: none; }
+  	  .rail-profile, .rail-status, .rail-github, .rail-friends { display: none; }
   .rail-links { margin: 0; border-top: 0; }
   .rail-links a, .rail-links button { min-height: 46px; }
   .paper { border-radius: 10px; }

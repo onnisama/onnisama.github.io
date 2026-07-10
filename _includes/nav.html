@@ -34,5 +34,14 @@
             GitHub <span aria-hidden="true">↗</span>
         </a>
         {% endif %}
+
+        {% if site.friends %}
+        <div class="rail-friends">
+            <span class="rail-friends__label">FRIENDS</span>
+            {% for friend in site.friends %}
+            <a class="rail-friends__link" href="{{ friend.href }}" target="_blank" rel="noopener noreferrer">{{ friend.title }} <span aria-hidden="true">↗</span></a>
+            {% endfor %}
+        </div>
+        {% endif %}
     </div>
 </aside>
