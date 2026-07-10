@@ -105,6 +105,42 @@ select {
 table {
   margin-top: 10px;
 }
+.post-container table:not(.rouge-table) {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  margin: 22px 0 28px;
+  overflow-x: auto;
+  border-collapse: collapse;
+  border-spacing: 0;
+  border: 1px solid #d8dee4;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 8px 24px rgba(140, 149, 159, 0.12);
+  -webkit-overflow-scrolling: touch;
+
+  thead {
+    background: #f6f8fa;
+  }
+
+  th,
+  td {
+    min-width: 120px;
+    padding: 10px 14px;
+    border: 1px solid #d8dee4;
+    vertical-align: top;
+  }
+
+  th {
+    color: #24292f;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  tbody tr:nth-child(even) {
+    background: #f7f8fb;
+  }
+}
 table.table > tbody,
 table.table > thead {
   th,
