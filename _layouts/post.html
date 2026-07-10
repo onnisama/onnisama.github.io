@@ -26,11 +26,10 @@ layout: default
             {% if site.disqus_username %}
             <section class="comment" aria-labelledby="comment-title">
                 <h2 id="comment-title">评论</h2>
-                <button class="comment-load" type="button" data-disqus-load
+                <div id="disqus_thread" data-disqus-auto
                     data-shortname="{{ site.disqus_username }}"
                     data-identifier="{{ page.id }}"
-                    data-url="{{ site.url }}{{ page.url }}">加载评论</button>
-                <div id="disqus_thread"></div>
+                    data-url="{{ site.url }}{{ page.url }}"></div>
             </section>
             {% endif %}
         </div>

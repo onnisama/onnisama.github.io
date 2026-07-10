@@ -87,31 +87,25 @@
   }
 
   function initDisqus() {
-    var button = document.querySelector('[data-disqus-load]');
-    if (!button || button.dataset.ready === 'true') return;
-    button.dataset.ready = 'true';
-    button.addEventListener('click', function () {
-      var config = {
-        url: button.dataset.url,
-        identifier: button.dataset.identifier
+    var container = document.querySelector('[data-disqus-auto]');
+    if (!container || container.dataset.ready === 'true') return;
+    container.dataset.ready = 'true';
+
+    if (window.DISQUS) {
+      window.DISQUS.reset({ reload: true, config: function () {
+        this.page.url = container.dataset.url;
+        this.page.identifier = container.dataset.identifier;
+      }});
+    } else {
+      window.disqus_config = function () {
+        this.page.url = container.dataset.url;
+        this.page.identifier = container.dataset.identifier;
       };
-      if (window.DISQUS) {
-        window.DISQUS.reset({ reload: true, config: function () {
-          this.page.url = config.url;
-          this.page.identifier = config.identifier;
-        }});
-      } else {
-        window.disqus_config = function () {
-          this.page.url = config.url;
-          this.page.identifier = config.identifier;
-        };
-        var script = document.createElement('script');
-        script.src = 'https://' + button.dataset.shortname + '.disqus.com/embed.js';
-        script.setAttribute('data-timestamp', String(Date.now()));
-        document.body.appendChild(script);
-      }
-      button.hidden = true;
-    }, { once: true });
+      var script = document.createElement('script');
+      script.src = 'https://' + container.dataset.shortname + '.disqus.com/embed.js';
+      script.setAttribute('data-timestamp', String(Date.now()));
+      document.body.appendChild(script);
+    }
   }
 
   function initLanguage() {
@@ -165,11 +159,86 @@
     });
   }
 
+  function initThemeToggle() {
+    var toggle = document.querySelector('[data-theme-toggle]');
+    if (!toggle || toggle.dataset.ready === 'true') return;
+    toggle.dataset.ready = 'true';
+
+    function setTheme(dark) {
+      var meta = document.querySelector('meta[name="theme-color"]');
+      if (dark) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        localStorage.setItem('theme', 'dark');
+        if (meta) meta.setAttribute('content', '#1c1c1a');
+      } else {
+        document.documentElement.removeAttribute('data-theme');
+        localStorage.setItem('theme', 'light');
+        if (meta) meta.setAttribute('content', '#f4f3ef');
+      }
+    }
+
+    toggle.addEventListener('click', function () {
+      setTheme(document.documentElement.getAttribute('data-theme') !== 'dark');
+    });
+
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function (event) {
+      if (!localStorage.getItem('theme')) {
+        setTheme(event.matches);
+      }
+    });
+  }
+
+  function initScrollTop() {
+    var button = document.querySelector('[data-scroll-top]');
+    var container = document.querySelector('.fab-container');
+    if (!button || button.dataset.ready === 'true') return;
+    button.dataset.ready = 'true';
+
+    var lastScrollY = window.scrollY;
+    var ticking = false;
+
+    function update() {
+      var currentScrollY = window.scrollY;
+
+      if (currentScrollY > 300) {
+        button.classList.add('is-visible');
+      } else {
+        button.classList.remove('is-visible');
+      }
+
+      if (container) {
+        if (currentScrollY > lastScrollY && currentScrollY > 300) {
+          container.classList.add('is-hidden');
+        } else if (currentScrollY < lastScrollY || currentScrollY <= 300) {
+          container.classList.remove('is-hidden');
+        }
+      }
+
+      lastScrollY = currentScrollY;
+      ticking = false;
+    }
+
+    update();
+    window.addEventListener('scroll', function () {
+      if (!ticking) {
+        requestAnimationFrame(function () { update(); });
+        ticking = true;
+      }
+    }, { passive: true });
+
+    button.addEventListener('click', function () {
+      var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      window.scrollTo({ top: 0, behavior: reduced ? 'auto' : 'smooth' });
+    });
+  }
+
   function initPageContent() {
     initDisqus();
     initLanguage();
     initCatalog();
     initTaskLists();
+    initThemeToggle();
+    initScrollTop();
     if (window.initArchivePage) window.initArchivePage();
   }
 
