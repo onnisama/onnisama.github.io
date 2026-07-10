@@ -1,7 +1,6 @@
 ---
 layout: post
 title: "Python 学习笔记目录"
-subtitle: "Python 学习笔记目录：可从索引进入对应章节~"
 author: "雾汐"
 header-style: text
 catalog: true

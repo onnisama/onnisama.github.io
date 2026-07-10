@@ -1,160 +1,47 @@
-/*
-Credits: this script is shamelessly borrowed from
-https://github.com/kitian616/jekyll-TeXt-theme
-*/
-(function(window, $) {
-  if (!$) return;
+(function () {
+  'use strict';
 
-  function queryString() {
-    // This function is anonymous, is executed immediately and
-    // the return value is assigned to QueryString!
-    var i = 0, queryObj = {}, pair;
-    var queryStr = window.location.search.substring(1);
-    var queryArr = queryStr.split('&');
-    for (i = 0; i < queryArr.length; i++) {
-      pair = queryArr[i].split('=');
-      // If first entry with this name
-      if (typeof queryObj[pair[0]] === 'undefined') {
-        queryObj[pair[0]] = pair[1];
-        // If second entry with this name
-      } else if (typeof queryObj[pair[0]] === 'string') {
-        queryObj[pair[0]] = [queryObj[pair[0]], pair[1]];
-        // If third or later entry with this name
-      } else {
-        queryObj[pair[0]].push(pair[1]);
-      }
+  window.initArchivePage = function () {
+    var tagBox = document.querySelector('.js-tags');
+    var result = document.querySelector('.js-result');
+    if (!tagBox || !result || tagBox.dataset.archiveReady === 'true') return;
+    tagBox.dataset.archiveReady = 'true';
+
+    var buttons = Array.prototype.slice.call(tagBox.querySelectorAll('[data-encode]'));
+    var items = Array.prototype.slice.call(result.querySelectorAll('.item'));
+
+    function selectTag(tag, selected) {
+      buttons.forEach(function (button) {
+        button.classList.toggle('focus', button === selected || (!selected && button.dataset.encode === tag));
+      });
+
+      items.forEach(function (item) {
+        var tags = (item.dataset.tags || '').split(',');
+        item.classList.toggle('d-none', Boolean(tag) && tags.indexOf(tag) === -1);
+      });
+
+      result.querySelectorAll('.archive-year').forEach(function (year) {
+        var hasVisible = Array.prototype.some.call(year.querySelectorAll('.item'), function (item) {
+          return !item.classList.contains('d-none');
+        });
+        year.classList.toggle('d-none', !hasVisible);
+      });
+
+      var url = new URL(window.location.href);
+      if (tag) url.searchParams.set('tag', tag); else url.searchParams.delete('tag');
+      window.history.replaceState(null, '', url.pathname + url.search + url.hash);
     }
-    return queryObj;
-  }
 
-  var setUrlQuery = (function() {
-    return function(query) {
-      var baseUrl = window.location.href.split('?')[0];
-      if (typeof query === 'string') {
-        window.history.replaceState(null, '', baseUrl + query);
-      } else {
-        window.history.replaceState(null, '', baseUrl);
-      }
-    };
-  })();
-
-  function applyTagCloud() {
-    if (!$.fn.tagcloud) return;
-
-    $.fn.tagcloud.defaults = {
-      color: { start: '#bbbbee', end: '#2f93b4' }
-    };
-    $('#tag_cloud a').tagcloud();
-  }
-
-  window.initArchivePage = function() {
-    var $tags = $('.js-tags');
-    var $articleTags = $tags.find('.tag-button');
-    var $tagShowAll = $tags.find('.tag-button--all');
-    var $result = $('.js-result');
-    var $sections = $result.find('section');
-
-    if (!$tags.length || !$result.length) return;
-
-    var sectionArticles = [];
-    var $lastFocusButton = null;
-    var sectionTopArticleIndex = [];
-    var hasInit = false;
-
-    $sections.each(function() {
-      sectionArticles.push($(this).find('.item'));
+    tagBox.addEventListener('click', function (event) {
+      var button = event.target.closest('[data-encode]');
+      if (!button) return;
+      selectTag(button.dataset.encode || '', button);
     });
 
-    function init() {
-      var i, index = 0;
-      for (i = 0; i < $sections.length; i++) {
-        sectionTopArticleIndex.push(index);
-        index += $sections.eq(i).find('.item').length;
-      }
-      sectionTopArticleIndex.push(index);
-    }
-
-    function searchButtonsByTag(_tag/*raw tag*/) {
-      if (!_tag) {
-        return $tagShowAll;
-      }
-      var _buttons = $articleTags.filter('[data-encode="' + _tag + '"]');
-      if (_buttons.length === 0) {
-        return $tagShowAll;
-      }
-      return _buttons;
-    }
-
-    function buttonFocus(target) {
-      if (target) {
-        target.addClass('focus');
-        $lastFocusButton && !$lastFocusButton.is(target) && $lastFocusButton.removeClass('focus');
-        $lastFocusButton = target;
-      }
-    }
-
-    function tagSelect (tag/*raw tag*/, target) {
-      var result = {}, $articles;
-      var i, j, k, _tag;
-
-      for (i = 0; i < sectionArticles.length; i++) {
-        $articles = sectionArticles[i];
-        for (j = 0; j < $articles.length; j++) {
-          if (tag === '' || tag === undefined) {
-            result[i] || (result[i] = {});
-            result[i][j] = true;
-          } else {
-            var tags = $articles.eq(j).data('tags').split(',');
-            for (k = 0; k < tags.length; k++) {
-              if (tags[k] === tag) {
-                result[i] || (result[i] = {});
-                result[i][j] = true; break;
-              }
-            }
-          }
-        }
-      }
-
-      for (i = 0; i < sectionArticles.length; i++) {
-        result[i] && $sections.eq(i).removeClass('d-none');
-        result[i] || $sections.eq(i).addClass('d-none');
-        for (j = 0; j < sectionArticles[i].length; j++) {
-          if (result[i] && result[i][j]) {
-            sectionArticles[i].eq(j).removeClass('d-none');
-          } else {
-            sectionArticles[i].eq(j).addClass('d-none');
-          }
-        }
-      }
-
-      hasInit || ($result.removeClass('d-none'), hasInit = true);
-
-
-      if (target) {
-        buttonFocus(target);
-        _tag = target.attr('data-encode');
-        if (_tag === '' || typeof _tag !== 'string') {
-          setUrlQuery();
-        } else {
-          setUrlQuery('?tag=' + _tag);
-        }
-      } else {
-        buttonFocus(searchButtonsByTag(tag));
-      }
-    }
-
-    var query = queryString(), 
-        _tag = query.tag;
-
-    init(); 
-    tagSelect(_tag);
-    applyTagCloud();
-
-    $tags.off('click.archivePage').on('click.archivePage', 'a', function(e) {   /* only change */
-      e.preventDefault();
-      tagSelect($(this).data('encode'), $(this));
-    });
+    var initialTag = new URLSearchParams(window.location.search).get('tag') || '';
+    var initialButton = buttons.find(function (button) { return button.dataset.encode === initialTag; }) || buttons[0];
+    selectTag(initialButton ? initialButton.dataset.encode : '', initialButton);
   };
 
-  $(document).ready(window.initArchivePage);
-})(window, window.jQuery);
+  window.initArchivePage();
+}());

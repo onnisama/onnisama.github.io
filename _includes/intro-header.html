@@ -1,116 +1,39 @@
 {% comment %}
-    @param {string} type - 'page' | 'post' | 'keynote'
-    @param {boolean} short
+    Text-only headers. Background images are intentionally not used.
+    @param type: page | post | keynote
+    @param short: compact page header
 {% endcomment %}
 
-{% if include.type == 'post' or include.type == 'page' %}
-<style type="text/css">
-    header.intro-header{
-        position: relative;
-        background-image: url('{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}');
-        background: {{ page.header-bg-css }};
-    }
-
-    {% if page.header-mask %}
-    header.intro-header .header-mask{
-        width: 100%;
-        height: 100%;
-        position: absolute;
-        background: rgba(0,0,0, {{ page.header-mask }});
-    }
-    {% endif %}
-</style>
-{% endif %}
-
 {% if include.type == 'post' %}
-{% if page.header-style == 'text' %}
-<header class="intro-header style-text" >
-{% else %}
-<header class="intro-header" >
-{% endif %}
-    <div class="header-mask"></div>
-    {% if page.header-img-credit %}
-    <div class="header-img-credit">
-        Image by <a href="//{{page.header-img-credit-href}}">{{page.header-img-credit}}</a>
+<header class="post-header">
+    {% if page.tags %}
+    <div class="post-header__tags" aria-label="文章标签">
+        {% for tag in page.tags %}
+        <a href="{{ site.baseurl }}/archive/?tag={{ tag | url_encode }}">{{ tag }}</a>
+        {% endfor %}
     </div>
     {% endif %}
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                <div class="post-heading">
-                    <div class="tags">
-                        {% for tag in page.tags %}
-                        <a class="tag" href="{{ site.baseurl }}/archive/?tag={{ tag | url_encode }}" title="{{ tag }}">{{ tag }}</a>
-                        {% endfor %}
-                    </div>
-                    <h1>{{ page.title }}</h1>
-                    {% if page.subtitle %}
-                    <h2 class="subheading">{{ page.subtitle }}</h2>
-                    {% endif %}
-                    <span class="meta">Posted by {% if page.author %}{{ page.author }}{% else %}{{ site.title }}{% endif %} on {{ page.date | date: "%B %-d, %Y" }}</span>
-                </div>
-            </div>
-        </div>
-    </div>
-</header>
-{% endif %}
-
-{% if include.type == 'keynote' %}
-<style type="text/css">
-    header.intro-header{
-        height: 500px;
-        overflow: hidden;
-    }
-    header.intro-header .container{
-        visibility: hidden;
-    }
-    header iframe{
-        width: 100%;
-        height: 100%;
-        border: 0;
-    }
-</style>
-<header class="intro-header" >
-    <iframe src="{{page.iframe}}"></iframe>
-    <!-- keep for SEO -->
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                <div class="post-heading">
-                    <div class="tags">
-                        {% for tag in page.tags %}
-                        <a class="tag" href="{{ site.baseurl }}/archive/?tag={{ tag | url_encode }}" title="{{ tag }}">{{ tag }}</a>
-                        {% endfor %}
-                    </div>
-                    <h1>{{ page.title }}</h1>
-                    {% if page.subtitle %}
-                    <h2 class="subheading">{{ page.subtitle }}</h2>
-                    {% endif %}
-                    <span class="meta">Posted by {% if page.author %}{{ page.author }}{% else %}{{ site.title }}{% endif %}
-                        on {{ page.date | date: "%B %-d, %Y" }}</span>
-                </div>
-            </div>
-        </div>
-    </div>
+    <h1>{{ page.title }}</h1>
+    {% if page.subtitle %}<p class="post-header__subtitle">{{ page.subtitle }}</p>{% endif %}
+    <p class="post-header__meta">
+        <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%Y 年 %-m 月 %-d 日" }}</time>
+        <span aria-hidden="true">·</span>
+        <span>{% if page.author %}{{ page.author }}{% else %}{{ site.title }}{% endif %}</span>
+    </p>
 </header>
 {% endif %}
 
 {% if include.type == 'page' %}
-<header class="intro-header" style="background-image: url('{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}')">
-  <div class="header-mask"></div>
-  <div class="container">
-    <div class="row">
-      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-        {% if include.short %}
-        <div class="site-heading" id="tag-heading">
-        {% else %}
-        <div class="site-heading">
-        {% endif %}
-          <h1>{% if page.title %}{{ page.title }}{% else %}{{ site.title }}{% endif %}</h1>
-          <span class="subheading">{{ page.description }}</span>
-        </div>
-      </div>
-    </div>
-  </div>
+<header class="page-header{% if include.short %} page-header--short{% endif %}">
+    <p class="page-header__eyebrow">{% if page.url == '/' %}RECENT NOTES{% else %}{{ site.title }}{% endif %}</p>
+    <h1>{% if page.title %}{{ page.title }}{% else %}{{ site.title }}{% endif %}</h1>
+    {% if page.description %}<p>{{ page.description }}</p>{% endif %}
+</header>
+{% endif %}
+
+{% if include.type == 'keynote' %}
+<header class="keynote-header">
+    <iframe src="{{ page.iframe }}" title="{{ page.title }}"></iframe>
+    <h1 class="sr-only">{{ page.title }}</h1>
 </header>
 {% endif %}

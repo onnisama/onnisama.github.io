@@ -1,7 +1,7 @@
 {
-  "name": "Hux Blog",
-  "short_name": "Hux Blog",
-  "description": "About an engineer & designer who loves web.",
+  "name": "芝士雾汐",
+  "short_name": "雾汐",
+  "description": "雾汐的计算机学习、项目实践与大学生活记录。",
   "icons": [{
     "src": "icons/128.png",
     "sizes": "128x128",
@@ -11,8 +11,8 @@
     "sizes": "512x512",
     "type": "image/png"
   }],
-  "background_color": "#fff",
-  "theme_color": "#000",
+  "background_color": "#f2f1ed",
+  "theme_color": "#f4f3ef",
   "start_url": "/",
   "display": "standalone",
   "orientation": "portrait"

@@ -1,182 +1,24 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="{% if page.lang %}{{ page.lang }}{% else %}zh-CN{% endif %}">
 {% include head.html %}
 
-<!-- hack iOS CSS :active style -->
-<body ontouchstart="">
-
+<body>
+    <a class="skip-link" href="#main-content">跳到正文</a>
+    <div class="site-shell">
         {% include nav.html %}
-        {% include search.html %}
 
-        <div id="pjax-root">
-            {{ content }}
+        <div class="site-stage">
+            {% include search.html %}
+            <main id="main-content" tabindex="-1">
+                <div id="pjax-root">
+                    {{ content }}
+                </div>
+            </main>
+            {% include footer.html %}
         </div>
+    </div>
 
-        {% include footer.html %}
-
-        {% include daily-song.html %}
-
-        <script>
-            // Lightweight PJAX to keep global audio alive across pages
-            (function () {
-                const root = document.getElementById('pjax-root');
-                if (!root) return;
-
-                function sameOrigin(url) {
-                    try {
-                        const u = new URL(url, window.location.href);
-                        return u.origin === window.location.origin;
-                    } catch (e) {
-                        return false;
-                    }
-                }
-
-                function getUrl(url) {
-                    try {
-                        return new URL(url, window.location.href);
-                    } catch (e) {
-                        return null;
-                    }
-                }
-
-                function isSamePageHashLink(href) {
-                    const url = getUrl(href);
-                    return !!(
-                        url &&
-                        url.origin === window.location.origin &&
-                        url.pathname === window.location.pathname &&
-                        url.search === window.location.search &&
-                        url.hash
-                    );
-                }
-
-                function findHashTarget(hash) {
-                    if (!hash) return null;
-
-                    try {
-                        return document.getElementById(decodeURIComponent(hash.slice(1)));
-                    } catch (e) {
-                        return document.getElementById(hash.slice(1));
-                    }
-                }
-
-                function scrollAfterLoad(url) {
-                    const nextUrl = getUrl(url);
-                    const target = nextUrl && findHashTarget(nextUrl.hash);
-
-                    if (target) {
-                        const top = target.getBoundingClientRect().top + window.pageYOffset - 80;
-                        window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
-                    } else {
-                        window.scrollTo({ top: 0, behavior: 'smooth' });
-                    }
-                }
-
-                function loadScriptOnce(src, marker, onload) {
-                    if (marker && window[marker]) {
-                        if (onload) onload();
-                        return;
-                    }
-
-                    const existing = document.querySelector(`script[data-pjax-src="${src}"], script[src="${src}"]`);
-                    if (existing) {
-                        existing.addEventListener('load', () => onload && onload(), { once: true });
-                        if (!marker && onload) onload();
-                        return;
-                    }
-
-                    const script = document.createElement('script');
-                    script.src = src;
-                    script.dataset.pjaxSrc = src;
-                    if (onload) script.addEventListener('load', onload, { once: true });
-                    document.body.appendChild(script);
-                }
-
-                function initPageModules() {
-                    if (window.initSideCatalog) {
-                        window.initSideCatalog();
-                    }
-
-                    if (root.querySelector('.js-tags') && root.querySelector('.js-result')) {
-                        loadScriptOnce('{{ "/js/jquery.tagcloud.js" | prepend: site.baseurl }}', null, () => {
-                            if (window.initArchivePage) window.initArchivePage();
-                        });
-                        loadScriptOnce('{{ "/js/archive.js" | prepend: site.baseurl }}', 'initArchivePage', () => {
-                            if (window.initArchivePage) window.initArchivePage();
-                        });
-                    }
-                }
-
-                function executeScripts(fragment) {
-                    const scripts = fragment.querySelectorAll('script');
-                    scripts.forEach((oldScript) => {
-                        const s = document.createElement('script');
-                        if (oldScript.src) {
-                            s.src = oldScript.src;
-                        } else {
-                            s.textContent = oldScript.textContent;
-                        }
-                        document.body.appendChild(s);
-                    });
-                }
-
-                async function load(url, replaceState = false) {
-                    try {
-                        const res = await fetch(url, { headers: { 'X-PJAX': 'true' } });
-                        if (!res.ok) throw new Error('HTTP ' + res.status);
-                        const text = await res.text();
-                        const doc = new DOMParser().parseFromString(text, 'text/html');
-                        const nextRoot = doc.getElementById('pjax-root');
-                        if (!nextRoot) throw new Error('No pjax-root');
-
-                        // Update content
-                        root.innerHTML = nextRoot.innerHTML;
-
-                        // Update title
-                        const title = doc.querySelector('title');
-                        if (title) document.title = title.textContent;
-
-                        // Run scripts inside new content
-                        executeScripts(nextRoot);
-
-                        // Update history
-                        const method = replaceState ? 'replaceState' : 'pushState';
-                        window.history[method]({}, '', url);
-
-                        initPageModules();
-                        scrollAfterLoad(url);
-                    } catch (e) {
-                        console.warn('PJAX failed, falling back', e);
-                        window.location.href = url;
-                    }
-                }
-
-                function onLinkClick(event) {
-                    const link = event.target.closest('a');
-                    if (!link) return;
-                    if (link.target && link.target !== '_self') return;
-                    if (link.hasAttribute('download')) return;
-                    const href = link.getAttribute('href');
-                    if (!href || href.startsWith('#')) return;
-                    if (isSamePageHashLink(href)) return;
-                    if (!sameOrigin(href)) return;
-
-                    event.preventDefault();
-                    const url = new URL(href, window.location.origin).toString();
-                    load(url);
-                }
-
-                window.addEventListener('popstate', () => load(window.location.href, true));
-                document.addEventListener('click', onLinkClick);
-            })();
-        </script>
-
-
-<!-- Image to hack wechat -->
-<img src="/img/icon_wechat.png" width="0" height="0" />
-<!-- Migrate from head to bottom, no longer block render and still work -->
-
+    {% include daily-song.html %}
+    <script src="{{ '/js/quiet-blog.js' | prepend: site.baseurl }}" defer></script>
 </body>
-
 </html>

@@ -1,97 +1,43 @@
-<!-- Navigation -->
-{% if page.nav-style == "invert" or page.header-style == "text" %}
-<nav class="navbar navbar-default navbar-custom navbar-fixed-top invert">
-    {% else %}
-    <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
-        {% endif %}
-        <div class="container-fluid">
-            <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header page-scroll">
-                <button type="button" class="navbar-toggle">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="{{ site.baseurl }}/">{{ site.title }}</a>
-            </div>
-
-            <!-- Collect the nav links, forms, and other content for toggling -->
-            <div id="huxblog_navbar">
-                <div class="navbar-collapse">
-                    <ul class="nav navbar-nav navbar-right">
-                        <li>
-                            <a href="{{ site.baseurl }}/">Home</a>
-                        </li>
-                        {% for page in site.pages %}
-                        {% if page.title and page.hide-in-nav != true %}
-                        <li>
-                            <a href="{{ page.url | prepend: site.baseurl }}">{{ page.title }}</a>
-                        </li>
-                        {% endif %}
-                        {% endfor %}
-                        <li class="search-icon">
-                            <a href="javascript:void(0)">
-                                <i class="fa fa-search"></i>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            <!-- /.navbar-collapse -->
+<aside class="site-rail" aria-label="站点导航">
+    <div class="rail-topbar">
+        <a class="rail-brand" href="{{ site.baseurl }}/" aria-label="{{ site.title }}首页">
+            <span class="rail-brand__mark" aria-hidden="true">雾</span>
+            <span>{{ site.title }}</span>
+        </a>
+        <div class="rail-topbar__actions">
+            <button class="rail-search" type="button" data-search-open aria-label="打开搜索">
+                <span aria-hidden="true">⌕</span>
+            </button>
+            <button class="rail-menu" type="button" aria-expanded="false" aria-controls="site-links">
+                <span></span><span></span><span></span>
+                <span class="sr-only">展开导航</span>
+            </button>
         </div>
-        <!-- /.container -->
-    </nav>
+    </div>
 
-    <script>
-        // Drop Bootstarp low-performance Navbar
-        // Use customize navbar with high-quality material design animation
-        // in high-perf jank-free CSS3 implementation
-        var $body = document.body;
-        var $toggle = document.querySelector('.navbar-toggle');
-        var $navbar = document.querySelector('#huxblog_navbar');
-        var $collapse = document.querySelector('.navbar-collapse');
+    <div class="rail-panel" id="site-links">
+        <a class="rail-profile" href="{{ '/about/' | prepend: site.baseurl }}">
+            <img src="{{ site.sidebar-avatar }}" alt="雾汐的头像" width="88" height="88">
+            <span class="rail-profile__name">雾汐</span>
+            <span class="rail-profile__note">{{ site.sidebar-about-description }}</span>
+        </a>
 
-        var __HuxNav__ = {
-            close: function () {
-                $navbar.className = " ";
-                // wait until animation end.
-                setTimeout(function () {
-                    // prevent frequently toggle
-                    if ($navbar.className.indexOf('in') < 0) {
-                        $collapse.style.height = "0px"
-                    }
-                }, 400)
-            },
-            open: function () {
-                $collapse.style.height = "auto"
-                $navbar.className += " in";
-            }
-        }
+        <nav class="rail-links" aria-label="主要导航">
+            <a href="{{ site.baseurl }}/" {% if page.url == '/' %}aria-current="page"{% endif %}><span>首页</span><small>最近更新</small></a>
+            <a href="{{ '/archive/' | prepend: site.baseurl }}" {% if page.url contains '/archive' %}aria-current="page"{% endif %}><span>归档</span><small>{{ site.posts | size }} 篇</small></a>
+            <a href="{{ '/about/' | prepend: site.baseurl }}" {% if page.url contains '/about' %}aria-current="page"{% endif %}><span>关于</span><small>认识我</small></a>
+            <button type="button" data-search-open><span>搜索</span><small>查找文章</small></button>
+        </nav>
 
-        // Bind Event
-        $toggle.addEventListener('click', function (e) {
-            if ($navbar.className.indexOf('in') > 0) {
-                __HuxNav__.close()
-            } else {
-                __HuxNav__.open()
-            }
-        })
+        <div class="rail-status">
+            <span>正在学习</span>
+            <p>计算机科学，也记录一些生活。</p>
+        </div>
 
-        /**
-         * Since Fastclick is used to delegate 'touchstart' globally
-         * to hack 300ms delay in iOS by performing a fake 'click',
-         * Using 'e.stopPropagation' to stop 'touchstart' event from 
-         * $toggle/$collapse will break global delegation.
-         * 
-         * Instead, we use a 'e.target' filter to prevent handler
-         * added to document close HuxNav.  
-         *
-         * Also, we use 'click' instead of 'touchstart' as compromise
-         */
-        document.addEventListener('click', function (e) {
-            if (e.target == $toggle) return;
-            if (e.target.className == 'icon-bar') return;
-            __HuxNav__.close();
-        })
-    </script>
+        {% if site.github_username %}
+        <a class="rail-github" href="https://github.com/{{ site.github_username }}" target="_blank" rel="noopener noreferrer">
+            GitHub <span aria-hidden="true">↗</span>
+        </a>
+        {% endif %}
+    </div>
+</aside>

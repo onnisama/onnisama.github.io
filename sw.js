@@ -9,21 +9,17 @@
 // CACHE_NAMESPACE
 // CacheStorage is shared between all sites under same domain.
 // A namespace can prevent potential name conflicts and mis-deletion.
-const CACHE_NAMESPACE = 'main-'
+const CACHE_NAMESPACE = 'wuxi-v2-'
 
 const CACHE = CACHE_NAMESPACE + 'precache-then-runtime';
 const PRECACHE_LIST = [
   "./",
   "./offline.html",
-  "./js/jquery.min.js",
-  "./js/bootstrap.min.js",
-  "./js/hux-blog.min.js",
-  "./js/snackbar.js",
-  "./img/icon_wechat.png",
-  "./img/home-bg.jpg",
-  "./img/404-bg.jpg",
-  "./css/hux-blog.min.css",
-  "./css/bootstrap.min.css"
+  "./js/quiet-blog.js",
+  "./js/archive.js",
+  "./search.json",
+  "./css/quiet-blog.css",
+  "./css/daily-song.css"
   // "//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css",
   // "//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/fonts/fontawesome-webfont.woff2?v=4.6.3",
   // "//cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.6/fastclick.min.js"
@@ -40,7 +36,7 @@ const DEPRECATED_CACHES = ['precache-v1', 'runtime', 'main-precache-v1', 'main-r
 // The Util Function to hack URLs of intercepted requests
 const getCacheBustingUrl = (req) => {
   var now = Date.now();
-  url = new URL(req.url)
+  const url = new URL(req.url)
 
   // 1. fixed http URL
   // Just keep syncing with location.protocol
@@ -84,7 +80,7 @@ const shouldRedirect = (req) => (isNavigationReq(req) && new URL(req.url).pathna
 // `${url}/` would mis-add "/" in the end of query, so we use URL object.
 // P.P.S. Always trust url.pathname instead of the whole url string.
 const getRedirectUrl = (req) => {
-  url = new URL(req.url)
+  const url = new URL(req.url)
   url.pathname += "/"
   return url.href
 }

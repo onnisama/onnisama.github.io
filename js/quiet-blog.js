@@ -1,0 +1,254 @@
+(function () {
+  'use strict';
+
+  var menuButton = document.querySelector('.rail-menu');
+  var railPanel = document.querySelector('.rail-panel');
+  var dialog = document.querySelector('[data-search-dialog]');
+  var searchInput = document.getElementById('search-input');
+  var searchResults = document.getElementById('search-results');
+  var root = document.getElementById('pjax-root');
+  var searchIndex = null;
+  var previousFocus = null;
+
+  function closeMenu() {
+    if (!menuButton || !railPanel) return;
+    menuButton.setAttribute('aria-expanded', 'false');
+    railPanel.classList.remove('is-open');
+  }
+
+  if (menuButton && railPanel) {
+    menuButton.addEventListener('click', function () {
+      var expanded = menuButton.getAttribute('aria-expanded') === 'true';
+      menuButton.setAttribute('aria-expanded', String(!expanded));
+      railPanel.classList.toggle('is-open', !expanded);
+    });
+  }
+
+  function openSearch() {
+    if (!dialog) return;
+    previousFocus = document.activeElement;
+    dialog.hidden = false;
+    document.body.classList.add('search-is-open');
+    window.setTimeout(function () { if (searchInput) searchInput.focus(); }, 20);
+  }
+
+  function closeSearch() {
+    if (!dialog || dialog.hidden) return;
+    dialog.hidden = true;
+    document.body.classList.remove('search-is-open');
+    if (previousFocus && previousFocus.focus) previousFocus.focus();
+  }
+
+  document.querySelectorAll('[data-search-open]').forEach(function (button) {
+    button.addEventListener('click', function () { closeMenu(); openSearch(); });
+  });
+  document.querySelectorAll('[data-search-close]').forEach(function (button) {
+    button.addEventListener('click', closeSearch);
+  });
+  document.addEventListener('keydown', function (event) {
+    if (event.key === 'Escape') closeSearch();
+  });
+
+  function escapeHtml(value) {
+    var node = document.createElement('span');
+    node.textContent = value || '';
+    return node.innerHTML;
+  }
+
+  function renderResults(query) {
+    if (!searchResults) return;
+    var keyword = query.trim().toLowerCase();
+    if (!keyword) {
+      searchResults.innerHTML = '<p class="search-hint">试试“Git”“Python”或“学习笔记”。</p>';
+      return;
+    }
+    if (!searchIndex) {
+      searchResults.innerHTML = '<p class="search-hint">正在读取文章索引…</p>';
+      return;
+    }
+    var matches = searchIndex.filter(function (item) {
+      return [item.title, item.tags, item.content].join(' ').toLowerCase().indexOf(keyword) !== -1;
+    }).slice(0, 12);
+    if (!matches.length) {
+      searchResults.innerHTML = '<p class="search-hint">没有找到相关内容，换个关键词试试。</p>';
+      return;
+    }
+    searchResults.innerHTML = matches.map(function (item) {
+      return '<a href="' + item.url + '"><strong>' + escapeHtml(item.title) + '</strong><span>' + escapeHtml(item.tags || '未分类') + '</span></a>';
+    }).join('');
+  }
+
+  if (searchInput) {
+    fetch('/search.json')
+      .then(function (response) { return response.json(); })
+      .then(function (items) { searchIndex = items; renderResults(searchInput.value); })
+      .catch(function () { if (searchResults) searchResults.innerHTML = '<p class="search-hint">搜索暂时不可用，请稍后再试。</p>'; });
+    searchInput.addEventListener('input', function () { renderResults(searchInput.value); });
+  }
+
+  function initDisqus() {
+    var button = document.querySelector('[data-disqus-load]');
+    if (!button || button.dataset.ready === 'true') return;
+    button.dataset.ready = 'true';
+    button.addEventListener('click', function () {
+      var config = {
+        url: button.dataset.url,
+        identifier: button.dataset.identifier
+      };
+      if (window.DISQUS) {
+        window.DISQUS.reset({ reload: true, config: function () {
+          this.page.url = config.url;
+          this.page.identifier = config.identifier;
+        }});
+      } else {
+        window.disqus_config = function () {
+          this.page.url = config.url;
+          this.page.identifier = config.identifier;
+        };
+        var script = document.createElement('script');
+        script.src = 'https://' + button.dataset.shortname + '.disqus.com/embed.js';
+        script.setAttribute('data-timestamp', String(Date.now()));
+        document.body.appendChild(script);
+      }
+      button.hidden = true;
+    }, { once: true });
+  }
+
+  function initLanguage() {
+    var select = document.querySelector('[data-language-select]');
+    if (!select || select.dataset.ready === 'true') return;
+    select.dataset.ready = 'true';
+    var initial = new URLSearchParams(window.location.search).get('lang') === 'en' ? 'en' : 'zh';
+    select.value = initial;
+
+    function show(language) {
+      document.querySelectorAll('.zh').forEach(function (node) { node.style.display = language === 'zh' ? 'block' : 'none'; });
+      document.querySelectorAll('.en').forEach(function (node) { node.style.display = language === 'en' ? 'block' : 'none'; });
+      document.documentElement.lang = language === 'en' ? 'en' : 'zh-CN';
+    }
+
+    show(initial);
+    select.addEventListener('change', function () {
+      var language = select.value === 'en' ? 'en' : 'zh';
+      var url = new URL(window.location.href);
+      if (language === 'en') url.searchParams.set('lang', 'en'); else url.searchParams.delete('lang');
+      window.history.replaceState(null, '', url.pathname + url.search + url.hash);
+      show(language);
+    });
+  }
+
+  function initCatalog() {
+    var container = document.querySelector('.post-container');
+    var catalog = document.querySelector('.catalog-body');
+    if (!container || !catalog) return;
+    catalog.innerHTML = '';
+    var headings = Array.prototype.slice.call(container.querySelectorAll('h2, h3'));
+    headings.forEach(function (heading, index) {
+      if (!heading.id) heading.id = 'section-' + (index + 1);
+      var item = document.createElement('li');
+      item.className = heading.tagName.toLowerCase() + '_nav';
+      var link = document.createElement('a');
+      link.href = '#' + encodeURIComponent(heading.id);
+      link.textContent = heading.textContent;
+      item.appendChild(link);
+      catalog.appendChild(item);
+    });
+    var box = document.querySelector('.catalog-container');
+    if (box) box.hidden = headings.length === 0;
+  }
+
+  function initTaskLists() {
+    document.querySelectorAll('.task-list-item input[type="checkbox"]').forEach(function (input) {
+      if (input.hasAttribute('aria-label')) return;
+      var item = input.closest('.task-list-item');
+      input.setAttribute('aria-label', item ? item.textContent.trim() : '任务状态');
+    });
+  }
+
+  function initPageContent() {
+    initDisqus();
+    initLanguage();
+    initCatalog();
+    initTaskLists();
+    if (window.initArchivePage) window.initArchivePage();
+  }
+
+  function updateHead(nextDocument) {
+    document.title = nextDocument.title;
+    ['meta[name="description"]', 'link[rel="canonical"]', 'meta[property="og:title"]', 'meta[property="og:description"]', 'meta[property="og:url"]'].forEach(function (selector) {
+      var current = document.querySelector(selector);
+      var next = nextDocument.querySelector(selector);
+      if (!next) return;
+      if (current) current.replaceWith(next.cloneNode(true)); else document.head.appendChild(next.cloneNode(true));
+    });
+  }
+
+  function executeScripts(scope) {
+    scope.querySelectorAll('script').forEach(function (oldScript) {
+      var script = document.createElement('script');
+      Array.prototype.slice.call(oldScript.attributes).forEach(function (attribute) { script.setAttribute(attribute.name, attribute.value); });
+      script.textContent = oldScript.textContent;
+      oldScript.replaceWith(script);
+    });
+  }
+
+  function updateCurrentNav() {
+    document.querySelectorAll('.rail-links a').forEach(function (link) {
+      var target = new URL(link.href, window.location.href);
+      var active = target.pathname === window.location.pathname || (target.pathname !== '/' && window.location.pathname.indexOf(target.pathname) === 0);
+      if (active) link.setAttribute('aria-current', 'page'); else link.removeAttribute('aria-current');
+    });
+  }
+
+  function scrollAfterNavigation(url) {
+    var parsed = new URL(url, window.location.href);
+    var target = parsed.hash ? document.getElementById(decodeURIComponent(parsed.hash.slice(1))) : null;
+    var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (target) target.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' });
+    else window.scrollTo({ top: 0, behavior: reduced ? 'auto' : 'smooth' });
+  }
+
+  async function navigate(url, replace) {
+    if (!root) { window.location.href = url; return; }
+    root.setAttribute('aria-busy', 'true');
+    try {
+      var response = await fetch(url, { headers: { 'X-PJAX': 'true' } });
+      if (!response.ok) throw new Error('HTTP ' + response.status);
+      var nextDocument = new DOMParser().parseFromString(await response.text(), 'text/html');
+      var nextRoot = nextDocument.getElementById('pjax-root');
+      if (!nextRoot) throw new Error('Missing page content');
+      root.innerHTML = nextRoot.innerHTML;
+      updateHead(nextDocument);
+      window.history[replace ? 'replaceState' : 'pushState']({}, '', url);
+      executeScripts(root);
+      updateCurrentNav();
+      initPageContent();
+      closeSearch();
+      closeMenu();
+      scrollAfterNavigation(url);
+      var main = document.getElementById('main-content');
+      if (main) main.focus({ preventScroll: true });
+    } catch (error) {
+      window.location.href = url;
+    } finally {
+      root.removeAttribute('aria-busy');
+    }
+  }
+
+  document.addEventListener('click', function (event) {
+    if (railPanel && railPanel.classList.contains('is-open') && !event.target.closest('.site-rail')) closeMenu();
+    var link = event.target.closest('a');
+    if (!link || event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    if (link.target && link.target !== '_self' || link.hasAttribute('download') || link.hasAttribute('data-no-pjax')) return;
+    var href = link.getAttribute('href');
+    if (!href || href.charAt(0) === '#') return;
+    var target = new URL(href, window.location.href);
+    if (target.origin !== window.location.origin) return;
+    if (target.pathname === window.location.pathname && target.search === window.location.search && target.hash) return;
+    event.preventDefault();
+    navigate(target.href, false);
+  });
+
+  window.addEventListener('popstate', function () { navigate(window.location.href, true); });
+  initPageContent();
+}());

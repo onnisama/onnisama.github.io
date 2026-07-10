@@ -1,16 +1,14 @@
 ---
 layout: default
-title: Offline
+title: 暂时离线
 hide-in-nav: true
-description: "您离线啦，看看网络吧!!"
-header-img: "img/404-bg.jpg"
+description: "网络好像打了个盹。"
 permalink: /offline.html
 ---
 
-
-<!-- Page Header -->
-{% include intro-header.html type="page" %}
-
-<script>
-	document.body.classList.add('page-fullscreen');
-</script>
+<section class="paper not-found">
+    <p class="not-found__code">OFFLINE</p>
+    <h1>现在还连不上网络。</h1>
+    <p>已经看过的页面可能仍然可以从浏览器历史中打开。等网络恢复后，再回来继续读吧。</p>
+    <button class="comment-load" type="button" onclick="location.reload()">重新连接</button>
+</section>
