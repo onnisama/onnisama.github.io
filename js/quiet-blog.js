@@ -209,6 +209,66 @@
     });
   }
 
+  function initCodeWindows() {
+    var languageNames = {
+      bash: 'Bash',
+      shell: 'Shell',
+      sh: 'Shell',
+      zsh: 'Zsh',
+      powershell: 'PowerShell',
+      ps1: 'PowerShell',
+      python: 'Python',
+      py: 'Python',
+      javascript: 'JavaScript',
+      js: 'JavaScript',
+      typescript: 'TypeScript',
+      ts: 'TypeScript',
+      html: 'HTML',
+      css: 'CSS',
+      scss: 'SCSS',
+      json: 'JSON',
+      yaml: 'YAML',
+      yml: 'YAML',
+      markdown: 'Markdown',
+      md: 'Markdown',
+      sql: 'SQL',
+      java: 'Java',
+      c: 'C',
+      cpp: 'C++',
+      csharp: 'C#',
+      cs: 'C#',
+      go: 'Go',
+      rust: 'Rust',
+      ruby: 'Ruby',
+      rb: 'Ruby',
+      text: 'Text',
+      plaintext: 'Text',
+      console: 'Console'
+    };
+
+    document.querySelectorAll('.post-container div.highlighter-rouge').forEach(function (block) {
+      if (block.dataset.codeWindowReady === 'true' || !block.querySelector('.highlight > pre')) return;
+      block.dataset.codeWindowReady = 'true';
+      block.classList.add('code-window');
+
+      var languageClass = Array.prototype.find.call(block.classList, function (name) {
+        return name.indexOf('language-') === 0;
+      });
+      var language = languageClass ? languageClass.slice(9).toLowerCase() : 'text';
+      var label = languageNames[language] || language.toUpperCase();
+
+      var bar = document.createElement('div');
+      bar.className = 'code-window-bar';
+      bar.setAttribute('aria-label', '代码语言：' + label);
+      bar.innerHTML = '<span class="code-window-dots" aria-hidden="true"><i></i><i></i><i></i></span>';
+      var languageLabel = document.createElement('span');
+      languageLabel.className = 'code-window-language';
+      languageLabel.textContent = label;
+      bar.appendChild(languageLabel);
+      block.prepend(bar);
+    });
+  }
+
   function initThemeToggle() {
     var toggle = document.querySelector('[data-theme-toggle]');
     if (!toggle || toggle.dataset.ready === 'true') return;
@@ -288,6 +348,7 @@
     initCatalog();
     initTaskLists();
     initMarkdownAlerts();
+    initCodeWindows();
     initThemeToggle();
     initScrollTop();
     if (window.initArchivePage) window.initArchivePage();
