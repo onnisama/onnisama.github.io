@@ -4,17 +4,43 @@
   if (!('serviceWorker' in navigator)) return;
   if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') return;
 
-  navigator.serviceWorker.register('/sw.js').then(function (registration) {
-    registration.addEventListener('updatefound', function () {
-      var worker = registration.installing;
-      if (!worker) return;
-      worker.addEventListener('statechange', function () {
-        if (worker.state === 'installed' && navigator.serviceWorker.controller) {
-          console.info('博客资源已更新，下次打开时生效。');
-        }
+  function isLegacyBlogCache(cacheName) {
+    return cacheName === 'precache-v1' ||
+      cacheName === 'runtime' ||
+      cacheName.indexOf('main-') === 0 ||
+      cacheName.indexOf('wuxi-') === 0;
+  }
+
+  async function clearOrphanedCaches() {
+    if (!('caches' in window)) return;
+    var cacheNames = await caches.keys();
+    await Promise.all(cacheNames
+      .filter(isLegacyBlogCache)
+      .map(function (cacheName) { return caches.delete(cacheName); }));
+  }
+
+  async function retireLegacyServiceWorker() {
+    try {
+      var registrations = await navigator.serviceWorker.getRegistrations();
+
+      // New visitors should not receive a Service Worker. We only keep this
+      // script temporarily so browsers with an existing registration can
+      // update to the cleanup worker at /sw.js.
+      if (!registrations.length) {
+        await clearOrphanedCaches();
+        return;
+      }
+
+      var registration = await navigator.serviceWorker.register('/sw.js', {
+        scope: '/',
+        updateViaCache: 'none',
       });
-    });
-  }).catch(function (error) {
-    console.warn('Service Worker registration failed:', error);
-  });
+
+      await registration.update();
+    } catch (error) {
+      console.warn('Legacy Service Worker cleanup failed:', error);
+    }
+  }
+
+  retireLegacyServiceWorker();
 }());

@@ -4,7 +4,7 @@ SEOTitle: 芝士雾汐 | WuXi
 email: 3204096434@qq.com
 description: "雾汐的个人博客：记录计算机学习、项目实践与大学生活。"
 keyword: "雾汐、大学生、生活、学习、芝士雾汐"
-url: "https://onnisama.github.io" # your host, for absolute URL
+url: "https://wuxio.top" # canonical production URL
 baseurl: "" # for example, '/blog' if your blog hosted on 'host/blog'
 
 # Publish posts or collection documents with a future date.
@@ -84,7 +84,7 @@ sidebar-avatar: https://github.com/onnisama.png # use absolute URL, seeing it's 
 
 # Progressive Web Apps
 chrome-tab-theme-color: "#f4f3ef"
-service-worker: true
+service-worker: true # temporary: load the cleanup script for existing visitors
 
 # MathJax rendering for layout:page (e.g. post preview)
 page-mathjax: false
