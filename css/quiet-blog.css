@@ -325,6 +325,61 @@ img { max-width: 100%; height: auto; }
   font-family: var(--serif);
   font-size: .96em;
 }
+.post-container blockquote.markdown-alert {
+  --alert-color: #426c8a;
+  --alert-border: #bfd3e0;
+  --alert-background: #f2f7fa;
+  margin: 1.7em 0;
+  padding: 15px 18px 16px;
+  border: 1px solid var(--alert-border);
+  border-left: 4px solid var(--alert-color);
+  border-radius: 7px;
+  background: var(--alert-background);
+  color: var(--ink-soft);
+  font-family: var(--sans);
+  font-size: .94em;
+}
+.post-container blockquote.markdown-alert-tip {
+  --alert-color: #47745d;
+  --alert-border: #bfd7c8;
+  --alert-background: #f2f8f4;
+}
+.post-container blockquote.markdown-alert-important {
+  --alert-color: #725b8e;
+  --alert-border: #d2c8df;
+  --alert-background: #f7f4fa;
+}
+.post-container blockquote.markdown-alert-warning {
+  --alert-color: #87631f;
+  --alert-border: #ded0a8;
+  --alert-background: #faf7ec;
+}
+.post-container blockquote.markdown-alert-caution {
+  --alert-color: #995248;
+  --alert-border: #dfc2bd;
+  --alert-background: #fbf3f1;
+}
+.post-container .markdown-alert-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 7px;
+  color: var(--alert-color);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+.post-container .markdown-alert-title svg {
+  width: 17px;
+  height: 17px;
+  flex: 0 0 auto;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.post-container .markdown-alert > :last-child { margin-bottom: 0; }
 .post-container code {
   padding: .16em .35em;
   border: 1px solid #e0dfd9;
@@ -661,6 +716,32 @@ img { max-width: 100%; height: auto; }
 [data-theme="dark"] .post-container blockquote {
   border-left-color: #4a635e;
   color: #95938b;
+}
+[data-theme="dark"] .post-container blockquote.markdown-alert {
+  --alert-color: #85b8da;
+  --alert-border: #344c5c;
+  --alert-background: #202a30;
+  color: #c9cbc5;
+}
+[data-theme="dark"] .post-container blockquote.markdown-alert-tip {
+  --alert-color: #82bea0;
+  --alert-border: #365345;
+  --alert-background: #202b25;
+}
+[data-theme="dark"] .post-container blockquote.markdown-alert-important {
+  --alert-color: #b7a0d2;
+  --alert-border: #514363;
+  --alert-background: #292530;
+}
+[data-theme="dark"] .post-container blockquote.markdown-alert-warning {
+  --alert-color: #d1ae63;
+  --alert-border: #5b4c2d;
+  --alert-background: #2e2a20;
+}
+[data-theme="dark"] .post-container blockquote.markdown-alert-caution {
+  --alert-color: #d98d82;
+  --alert-border: #64413d;
+  --alert-background: #302321;
 }
 [data-theme="dark"] .post-container code {
   border-color: #3e3d39;

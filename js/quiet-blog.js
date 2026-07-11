@@ -159,6 +159,56 @@
     });
   }
 
+  function initMarkdownAlerts() {
+    var alerts = {
+      NOTE: {
+        label: 'Note',
+        icon: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v5"></path><path d="M12 8h.01"></path></svg>'
+      },
+      TIP: {
+        label: 'Tip',
+        icon: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18h6"></path><path d="M10 22h4"></path><path d="M8.5 14.5A6 6 0 1 1 15.5 14.5C14.5 15.3 14 16 14 18h-4c0-2-.5-2.7-1.5-3.5Z"></path></svg>'
+      },
+      IMPORTANT: {
+        label: 'Important',
+        icon: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 2.2 4.5 5 .7-3.6 3.5.9 5-4.5-2.4-4.5 2.4.9-5-3.6-3.5 5-.7L12 3Z"></path></svg>'
+      },
+      WARNING: {
+        label: 'Warning',
+        icon: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2.8 19h18.4L12 3Z"></path><path d="M12 9v4"></path><path d="M12 16h.01"></path></svg>'
+      },
+      CAUTION: {
+        label: 'Caution',
+        icon: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 3-5 5v8l5 5h8l5-5V8l-5-5H8Z"></path><path d="M12 8v5"></path><path d="M12 16h.01"></path></svg>'
+      }
+    };
+
+    document.querySelectorAll('.post-container blockquote:not(.markdown-alert)').forEach(function (quote) {
+      var marker = quote.firstElementChild;
+      if (!marker || marker.tagName !== 'P') return;
+
+      var match = marker.textContent.trim().match(/^\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]/i);
+      if (!match) return;
+
+      var type = match[1].toUpperCase();
+      var config = alerts[type];
+      var firstNode = marker.firstChild;
+      if (firstNode && firstNode.nodeType === Node.TEXT_NODE) {
+        firstNode.nodeValue = firstNode.nodeValue.replace(/^\s*\[![A-Z]+\]\s*/i, '');
+      }
+      if (!marker.textContent.trim()) marker.remove();
+
+      quote.classList.add('markdown-alert', 'markdown-alert-' + type.toLowerCase());
+      quote.setAttribute('role', 'note');
+      quote.setAttribute('aria-label', config.label);
+
+      var title = document.createElement('p');
+      title.className = 'markdown-alert-title';
+      title.innerHTML = config.icon + '<span>' + config.label + '</span>';
+      quote.prepend(title);
+    });
+  }
+
   function initThemeToggle() {
     var toggle = document.querySelector('[data-theme-toggle]');
     if (!toggle || toggle.dataset.ready === 'true') return;
@@ -237,6 +287,7 @@
     initLanguage();
     initCatalog();
     initTaskLists();
+    initMarkdownAlerts();
     initThemeToggle();
     initScrollTop();
     if (window.initArchivePage) window.initArchivePage();
