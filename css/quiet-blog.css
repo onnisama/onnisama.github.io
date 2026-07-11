@@ -938,12 +938,44 @@ img { max-width: 100%; height: auto; }
   opacity: 0;
   pointer-events: none;
 }
-/* Page transition */
-#pjax-root {
-  transition: opacity .28s ease, transform .28s ease;
+/* Page transition: deterministic for fresh, cached and history navigation. */
+html.is-resetting-scroll { scroll-behavior: auto !important; }
+#pjax-root { opacity: 1; }
+.site-stage { transition: opacity .12s ease-out; }
+.site-stage.is-leaving {
+  opacity: 0;
+  pointer-events: none;
+  will-change: opacity;
+}
+#pjax-root.is-entering {
+  animation: page-root-enter .24s ease-out both;
+}
+#pjax-root.is-entering .post-header > *,
+#pjax-root.is-entering .page-header > *,
+#pjax-root.is-entering .post-container > :nth-child(-n + 4):not(.post-neighbors):not(.comment):not(script):not(style),
+#pjax-root.is-entering .catalog-container {
+  animation: page-copy-enter .44s cubic-bezier(.22, 1, .36, 1) both;
   will-change: opacity, transform;
 }
-#pjax-root[aria-busy="true"] {
-  opacity: 0;
-  transform: translateY(8px);
+#pjax-root.is-entering .post-header > :nth-child(1),
+#pjax-root.is-entering .page-header > :nth-child(1) { animation-delay: .04s; }
+#pjax-root.is-entering .post-header > :nth-child(2),
+#pjax-root.is-entering .page-header > :nth-child(2) { animation-delay: .09s; }
+#pjax-root.is-entering .post-header > :nth-child(3),
+#pjax-root.is-entering .page-header > :nth-child(3) { animation-delay: .14s; }
+#pjax-root.is-entering .post-header > :nth-child(4),
+#pjax-root.is-entering .page-header > :nth-child(4) { animation-delay: .18s; }
+#pjax-root.is-entering .post-container > :nth-child(1) { animation-delay: .12s; }
+#pjax-root.is-entering .post-container > :nth-child(2) { animation-delay: .16s; }
+#pjax-root.is-entering .post-container > :nth-child(3) { animation-delay: .2s; }
+#pjax-root.is-entering .post-container > :nth-child(4) { animation-delay: .24s; }
+#pjax-root.is-entering .catalog-container { animation-delay: .18s; }
+
+@keyframes page-root-enter {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes page-copy-enter {
+  from { opacity: 0; transform: translate3d(0, 10px, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
 }

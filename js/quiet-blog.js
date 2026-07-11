@@ -7,8 +7,18 @@
   var searchInput = document.getElementById('search-input');
   var searchResults = document.getElementById('search-results');
   var root = document.getElementById('pjax-root');
+  var stage = document.querySelector('.site-stage');
   var searchIndex = null;
   var previousFocus = null;
+  var activeNavigation = null;
+  var navigationSerial = 0;
+  var entryAnimationTimer = null;
+  var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  var renderedPageKey = window.location.pathname + window.location.search;
+
+  if ('scrollRestoration' in window.history) {
+    window.history.scrollRestoration = 'manual';
+  }
 
   function closeMenu() {
     if (!menuButton || !railPanel) return;
@@ -127,6 +137,7 @@
       var url = new URL(window.location.href);
       if (language === 'en') url.searchParams.set('lang', 'en'); else url.searchParams.delete('lang');
       window.history.replaceState(null, '', url.pathname + url.search + url.hash);
+      renderedPageKey = url.pathname + url.search;
       show(language);
     });
   }
@@ -381,38 +392,118 @@
     });
   }
 
-  function scrollAfterNavigation(url) {
+  function getNavigationTarget(url) {
     var parsed = new URL(url, window.location.href);
-    var target = parsed.hash ? document.getElementById(decodeURIComponent(parsed.hash.slice(1))) : null;
-    var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (target) target.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' });
-    else window.scrollTo({ top: 0, behavior: reduced ? 'auto' : 'smooth' });
+    if (!parsed.hash) return null;
+    var id = parsed.hash.slice(1);
+    try { id = decodeURIComponent(id); } catch (error) { /* Keep the raw hash. */ }
+    return document.getElementById(id);
   }
 
-  async function navigate(url, replace) {
+  function resetNavigationPosition(url) {
+    var target = getNavigationTarget(url);
+    document.documentElement.classList.add('is-resetting-scroll');
+    // Apply the override before asking the browser to move; otherwise the
+    // global smooth-scroll rule can still win for one frame.
+    void document.documentElement.offsetHeight;
+    if (target) target.scrollIntoView({ behavior: 'auto', block: 'start' });
+    else window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+    window.requestAnimationFrame(function () {
+      document.documentElement.classList.remove('is-resetting-scroll');
+    });
+  }
+
+  function stopEntryAnimation() {
+    if (entryAnimationTimer) {
+      window.clearTimeout(entryAnimationTimer);
+      entryAnimationTimer = null;
+    }
+    root.classList.remove('is-entering');
+  }
+
+  function playEntryAnimation() {
+    if (!root) return;
+    stopEntryAnimation();
+    if (reducedMotion.matches) {
+      if (stage) stage.classList.remove('is-leaving');
+      return;
+    }
+
+    // Force a fresh animation timeline even when this URL was just visited.
+    void root.offsetWidth;
+    root.classList.add('is-entering');
+    if (stage) stage.classList.remove('is-leaving');
+    entryAnimationTimer = window.setTimeout(function () {
+      root.classList.remove('is-entering');
+      entryAnimationTimer = null;
+    }, 720);
+  }
+
+  function waitForExitAnimation() {
+    if (reducedMotion.matches || !stage) return Promise.resolve();
+    return new Promise(function (resolve) {
+      var timeout;
+      function finish(event) {
+        if (event && (event.target !== stage || event.propertyName !== 'opacity')) return;
+        stage.removeEventListener('transitionend', finish);
+        stage.removeEventListener('transitioncancel', finish);
+        window.clearTimeout(timeout);
+        resolve();
+      }
+      stage.addEventListener('transitionend', finish);
+      stage.addEventListener('transitioncancel', finish);
+      timeout = window.setTimeout(finish, 220);
+    });
+  }
+
+  async function navigate(url, fromHistory) {
     if (!root) { window.location.href = url; return; }
+    var serial = ++navigationSerial;
+    if (activeNavigation) activeNavigation.abort();
+    activeNavigation = new AbortController();
+
+    stopEntryAnimation();
+    if (stage) stage.classList.remove('is-leaving');
     root.setAttribute('aria-busy', 'true');
     try {
-      var response = await fetch(url, { headers: { 'X-PJAX': 'true' } });
+      var response = await fetch(url, {
+        headers: { 'X-PJAX': 'true' },
+        signal: activeNavigation.signal
+      });
       if (!response.ok) throw new Error('HTTP ' + response.status);
       var nextDocument = new DOMParser().parseFromString(await response.text(), 'text/html');
       var nextRoot = nextDocument.getElementById('pjax-root');
       if (!nextRoot) throw new Error('Missing page content');
+
+      // Keep the current page visible while loading, then leave on a fixed timeline.
+      if (stage) stage.classList.add('is-leaving');
+      await waitForExitAnimation();
+      if (serial !== navigationSerial) return;
+
       root.innerHTML = nextRoot.innerHTML;
       updateHead(nextDocument);
-      window.history[replace ? 'replaceState' : 'pushState']({}, '', url);
+      if (!fromHistory) window.history.pushState({ pjax: true }, '', url);
+      renderedPageKey = window.location.pathname + window.location.search;
       executeScripts(root);
       updateCurrentNav();
       initPageContent();
       closeSearch();
       closeMenu();
-      scrollAfterNavigation(url);
+      resetNavigationPosition(url);
       var main = document.getElementById('main-content');
       if (main) main.focus({ preventScroll: true });
+
+      root.removeAttribute('aria-busy');
+      playEntryAnimation();
     } catch (error) {
+      if (error.name === 'AbortError') return;
       window.location.href = url;
     } finally {
-      root.removeAttribute('aria-busy');
+      if (serial === navigationSerial) {
+        root.removeAttribute('aria-busy');
+        if (stage) stage.classList.remove('is-leaving');
+        activeNavigation = null;
+      }
     }
   }
 
@@ -430,6 +521,21 @@
     navigate(target.href, false);
   });
 
-  window.addEventListener('popstate', function () { navigate(window.location.href, true); });
+  window.addEventListener('popstate', function () {
+    var nextPageKey = window.location.pathname + window.location.search;
+    if (nextPageKey === renderedPageKey) {
+      resetNavigationPosition(window.location.href);
+      return;
+    }
+    navigate(window.location.href, true);
+  });
+  window.addEventListener('pageshow', function (event) {
+    if (!event.persisted) return;
+    resetNavigationPosition(window.location.href);
+    initPageContent();
+    playEntryAnimation();
+  });
   initPageContent();
+  resetNavigationPosition(window.location.href);
+  playEntryAnimation();
 }());
