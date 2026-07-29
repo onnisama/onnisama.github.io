@@ -353,6 +353,26 @@
     });
   }
 
+  function initExternalPostLinks() {
+    document.querySelectorAll('.post-container a[href]').forEach(function (link) {
+      var target;
+      try {
+        target = new URL(link.href, window.location.href);
+      } catch (error) {
+        return;
+      }
+
+      if (!/^https?:$/.test(target.protocol) || target.origin === window.location.origin) return;
+
+      link.target = '_blank';
+      var rel = (link.getAttribute('rel') || '').split(/\s+/).filter(Boolean);
+      ['noopener', 'noreferrer'].forEach(function (value) {
+        if (rel.indexOf(value) === -1) rel.push(value);
+      });
+      link.setAttribute('rel', rel.join(' '));
+    });
+  }
+
   function initPageContent() {
     initDisqus();
     initLanguage();
@@ -360,6 +380,7 @@
     initTaskLists();
     initMarkdownAlerts();
     initCodeWindows();
+    initExternalPostLinks();
     initThemeToggle();
     initScrollTop();
     if (window.initArchivePage) window.initArchivePage();
