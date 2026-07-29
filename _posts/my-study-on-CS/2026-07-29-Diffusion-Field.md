@@ -28,6 +28,7 @@ $$
 ![扩散原野](https://raw.githubusercontent.com/onnisama/Diffusion_field/main/public/og.png)
 
 项目仓库：[onnisama/Diffusion_field](https://github.com/onnisama/Diffusion_field)
+
 一键跳转：[扩散原野](https://diffusion.onnisama.top)
 
 ## 为什么不是再写一份论文笔记
