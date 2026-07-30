@@ -1,0 +1,60 @@
+---
+title: "项目"
+layout: default
+description: "这里收录我主持与参与协作的项目。点击项目卡片，可以查看更完整的介绍。"
+---
+
+{% assign hosted_projects = site.data.projects.hosted %}
+{% assign collaborative_projects = site.data.projects.collaborative %}
+
+<section class="paper projects-paper">
+    {% include intro-header.html type='page' short=true %}
+
+    <div class="projects-content">
+        <div class="projects-overview" aria-label="项目概览">
+            <p>这些项目来自课程实践和个人兴趣。</p>
+            <dl>
+                <div>
+                    <dt>{{ hosted_projects | size }}</dt>
+                    <dd>主持仓库</dd>
+                </div>
+                <div>
+                    <dt>{{ collaborative_projects | size }}</dt>
+                    <dd>协作仓库</dd>
+                </div>
+            </dl>
+        </div>
+
+        <section class="project-group" aria-labelledby="hosted-projects-title">
+            <header class="project-group__header">
+                <div>
+                    <p>由我维护和推进</p>
+                    <h2 id="hosted-projects-title">主持仓库</h2>
+                </div>
+                <span>{{ hosted_projects | size }} 个项目</span>
+            </header>
+
+            <div class="project-grid">
+                {% for project in hosted_projects %}
+                {% include project-card.html project=project index=forloop.index %}
+                {% endfor %}
+            </div>
+        </section>
+
+        <section class="project-group project-group--collaborative" aria-labelledby="collaborative-projects-title">
+            <header class="project-group__header">
+                <div>
+                    <p>与同伴共同完成</p>
+                    <h2 id="collaborative-projects-title">协作仓库</h2>
+                </div>
+                <span>{{ collaborative_projects | size }} 个项目</span>
+            </header>
+
+            <div class="project-grid">
+                {% for project in collaborative_projects %}
+                {% include project-card.html project=project index=forloop.index %}
+                {% endfor %}
+            </div>
+        </section>
+    </div>
+</section>

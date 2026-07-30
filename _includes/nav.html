@@ -1,3 +1,6 @@
+{% assign hosted_project_count = site.data.projects.hosted | size %}
+{% assign collaborative_project_count = site.data.projects.collaborative | size %}
+{% assign project_count = hosted_project_count | plus: collaborative_project_count %}
 <aside class="site-rail" aria-label="站点导航">
     <div class="rail-topbar">
         <a class="rail-brand" href="{{ site.baseurl }}/" aria-label="{{ site.title }}首页">
@@ -25,6 +28,7 @@
         <nav class="rail-links" aria-label="主要导航">
             <a href="{{ site.baseurl }}/" {% if page.url == '/' %}aria-current="page"{% endif %}><span>首页</span><small>最近更新</small></a>
             <a href="{{ '/archive/' | prepend: site.baseurl }}" {% if page.url contains '/archive' %}aria-current="page"{% endif %}><span>归档</span><small>{{ site.posts | size }} 篇</small></a>
+            <a href="{{ '/projects/' | prepend: site.baseurl }}" {% if page.url contains '/projects' %}aria-current="page"{% endif %}><span>项目</span><small>{{ project_count }} 项</small></a>
             <a href="{{ '/about/' | prepend: site.baseurl }}" {% if page.url contains '/about' %}aria-current="page"{% endif %}><span>关于</span><small>认识我</small></a>
             <button type="button" data-search-open><span>搜索</span><small>查找文章</small></button>
         </nav>
