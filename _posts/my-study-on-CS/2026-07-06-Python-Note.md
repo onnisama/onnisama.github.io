@@ -5,7 +5,7 @@ author: "雾汐"
 header-style: text
 catalog: true
 tags:
-  - Python
+  - 笔记
 ---
 
 ## 目录

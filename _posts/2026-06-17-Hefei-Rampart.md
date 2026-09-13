@@ -5,7 +5,7 @@ author: "雾汐"
 header-style: text
 catalog: true
 tags:
-  - 历史随笔
+  - 随笔
 ---
 
 <style>

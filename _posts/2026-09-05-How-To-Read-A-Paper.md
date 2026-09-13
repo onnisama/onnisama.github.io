@@ -5,7 +5,7 @@ author: "雾汐"
 header-style: text
 catalog: true
 tags:
-  - 论文阅读
+  - 笔记
 ---
 
 <style>
