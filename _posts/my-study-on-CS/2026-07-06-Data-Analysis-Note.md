@@ -5,10 +5,7 @@ author: "雾汐"
 header-style: text
 catalog: true
 tags:
-  - Python
-  - Pandas
   - 数据分析
-  - 学习笔记
 ---
 
 ## Pandas

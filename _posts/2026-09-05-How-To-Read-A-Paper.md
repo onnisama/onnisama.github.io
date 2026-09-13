@@ -5,9 +5,7 @@ author: "雾汐"
 header-style: text
 catalog: true
 tags:
-  - 科研
   - 论文阅读
-  - 学习方法
 ---
 
 <style>

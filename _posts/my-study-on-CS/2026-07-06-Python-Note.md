@@ -6,8 +6,6 @@ header-style: text
 catalog: true
 tags:
   - Python
-  - 编程基础
-  - 学习笔记
 ---
 
 ## 目录

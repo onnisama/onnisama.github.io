@@ -5,10 +5,7 @@ author: "雾汐"
 header-style: text
 catalog: true
 tags:
-  - 合肥
-  - 近代史
   - 历史随笔
-  - AI写作
 ---
 
 <style>

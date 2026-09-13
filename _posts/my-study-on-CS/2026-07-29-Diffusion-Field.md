@@ -7,9 +7,6 @@ catalog: true
 mathjax: true
 tags:
   - Diffusion
-  - DDPM
-  - 深度学习
-  - 项目实践
 ---
 
 前段时间在学习扩散模型时，我发现自己经常处在一种“公式好像看懂了，但整个过程并没有真正连起来”的状态。

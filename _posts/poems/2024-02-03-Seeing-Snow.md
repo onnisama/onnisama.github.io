@@ -6,7 +6,6 @@ header-style: text
 catalog:      true
 tags:
     - 诗词
-    - 随笔
 ---
 
 <h2 align="center">诞日漫步览雪感怀</h2>
