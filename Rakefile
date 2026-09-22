@@ -46,7 +46,7 @@ end # task :post
 
 desc "Launch preview environment"
 task :preview do
-  system "jekyll --auto --server"
+  exec "bundle exec jekyll serve"
 end # task :preview
 
 #Load custom rake scripts

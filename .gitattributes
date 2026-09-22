@@ -1,0 +1,17 @@
+# Keep checkouts and commits stable across Linux, macOS, and Windows.
+* text=auto eol=lf
+
+# These files must never be interpreted as text.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.eot binary
+
+# Preserve native Windows line endings for any future command scripts.
+*.bat text eol=crlf
+*.cmd text eol=crlf
