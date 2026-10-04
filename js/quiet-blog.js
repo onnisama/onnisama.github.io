@@ -65,6 +65,24 @@
     return node.innerHTML;
   }
 
+  function normalizeSearchText(value) {
+    return String(value || '').replace(/\s+/g, ' ').trim();
+  }
+
+  function getSearchSnippet(item, keyword) {
+    var content = normalizeSearchText(item.content);
+    if (!content) return normalizeSearchText(item.tags) || '文章内容';
+
+    var position = content.toLowerCase().indexOf(keyword);
+    var snippetLength = 96;
+    var start = position > 32 ? position - 32 : 0;
+    var snippet = content.slice(start, start + snippetLength);
+
+    if (start > 0) snippet = '…' + snippet;
+    if (start + snippetLength < content.length) snippet += '…';
+    return snippet;
+  }
+
   function renderResults(query) {
     if (!searchResults) return;
     var keyword = query.trim().toLowerCase();
@@ -84,7 +102,7 @@
       return;
     }
     searchResults.innerHTML = matches.map(function (item) {
-      return '<a href="' + item.url + '"><strong>' + escapeHtml(item.title) + '</strong><span>' + escapeHtml(item.tags || '未分类') + '</span></a>';
+      return '<a href="' + escapeHtml(item.url) + '"><strong>' + escapeHtml(item.title) + '</strong><span>' + escapeHtml(getSearchSnippet(item, keyword)) + '</span></a>';
     }).join('');
   }
 

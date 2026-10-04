@@ -2,13 +2,19 @@
 layout: null
 ---
 [
-  {% for post in site.posts %}
+  {% assign search_documents = site.posts | concat: site.pages %}
+  {% assign has_search_document = false %}
+  {% for post in search_documents %}
+    {% if post.layout == 'post' and post.title and post.url %}
+    {% if has_search_document %},{% endif %}
     {
       "title"   : {{ post.title | jsonify }},
       "tags"    : {{ post.tags | join: ', ' | jsonify }},
       "url"     : {{ post.url | prepend: site.baseurl | jsonify }},
       "date"    : {{ post.date | date_to_xmlschema | jsonify }},
       "content" : {{ post.content | strip_html | strip_newlines | jsonify }}
-    } {% unless forloop.last %},{% endunless %}
+    }
+    {% assign has_search_document = true %}
+    {% endif %}
   {% endfor %}
 ]
