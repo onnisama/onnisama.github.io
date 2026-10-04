@@ -84,7 +84,7 @@ print(list[::-1])
 
 生成器有两种构造方法：
 
-1. 直接构造
+#### 1. 直接构造
 
 只需把列表生成式的 `[ ]` 改为 `( )` 即可
 
@@ -94,7 +94,7 @@ print(list[::-1])
 g = (x * x for x in range(10))
 ```
 
-2. 函数构造
+#### 2. 函数构造
 
 函数的返回值改为 `yield` ，且每次调用都从上次的 `yeild` 处继续
 
@@ -122,7 +122,7 @@ g = fib(6)
 
 生成器的元素也有两种迭代方法：
 
-1.  `next` 函数
+#### 1. `next` 函数
 
 ```python
 t = triangles()
@@ -146,7 +146,7 @@ for t in results:
 [1, 9, 36, 84, 126, 126, 84, 36, 9, 1]
 ```
 
-2.  `for` 循环
+#### 2. `for` 循环
 
 ```python
 n = 0
@@ -208,8 +208,8 @@ print(isinstance(..., Iterator))
 
 例如：
 
->```python
->mycompany
+> ```text
+> mycompany
 > ├─ web
 > │  ├─ __init__.py
 > │  ├─ utils.py
@@ -217,7 +217,7 @@ print(isinstance(..., Iterator))
 > ├─ __init__.py
 > ├─ abc.py
 > └─ utils.py
->```
+> ```
 
 可以使用
 

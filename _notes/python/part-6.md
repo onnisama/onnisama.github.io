@@ -174,8 +174,11 @@ class User(LoggingMixin, JsonSerializableMixin):
 user = User("小明", 18)
 print(user.greet())  # 触发日志输出
 print(user.to_json())  # 调用序列化方法
+```
+
 输出：
-plaintext
+
+```text
 [2023-10-01 12:00:00] User: 用户 小明 打招呼
 你好，我是 小明，今年 18 岁
 {"name": "小明", "age": 18}

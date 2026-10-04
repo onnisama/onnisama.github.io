@@ -421,14 +421,14 @@ Alice is 20 years old
 
 ##### 五、格式控制
 
-1. 保留小数
+**1. 保留小数**
 
 ```python
 >>> "pi = {:.2f}".format(3.14159)
 pi = 3.14
 ```
 
-2. 对齐
+**2. 对齐**
 
 ```python
 "{:<10}".format("hi")   # 左对齐
@@ -436,14 +436,14 @@ pi = 3.14
 "{:^10}".format("hi")   # 居中
 ```
 
-3. 补零
+**3. 补零**
 
 ```python
 >>> "{:05d}".format(42)
 00042
 ```
 
-4. 百分比
+**4. 百分比**
 
 ```python
 >>> "{:.2%}".format(0.256)
@@ -452,14 +452,14 @@ pi = 3.14
 
 ##### 六、访问数据结构
 
-1. 列表
+**1. 列表**
 
 ```python
 >>> "{0[0]} {0[1]}".format([1, 2])
 1 2
 ```
 
-2. 字典
+**2. 字典**
 
 ```
 "{name} is {age}".format(**{"name": "Alice", "age": 20})
@@ -469,7 +469,7 @@ pi = 3.14
 
 可以使用一些函数对列表进行处理
 
-1. 添加元素
+#### 1. 添加元素
 
 + append 用于在列表后添加元素
 
@@ -492,7 +492,7 @@ print(classmates)
 >>>['Michael', 'Jack', 'Bob', 'Tracy']
 ```
 
-2. 删除元素
+#### 2. 删除元素
 
 - pop 用于根据序号删除指定元素并返回删除元素
 
@@ -515,7 +515,7 @@ print(list)
 >>>[3, 4]
 ```
 
-3. sort 用于排列列表
+#### 3. sort 用于排列列表
 
 ```python
 friends = ['Peter','Linda','Tom']
@@ -525,7 +525,7 @@ print(friends)
 >>>['Linda', 'Peter', 'Tom']
 ```
 
-4. sum , max , min 分别表示总和，最大值和最小值
+#### 4. sum , max , min 分别表示总和，最大值和最小值
 
 格式为
 
@@ -542,7 +542,7 @@ min([], key = func)	#找到list中使func取最小值时的取值
 3
 ```
 
-5. split 用于分隔字符串生成列表，默认以空格 / 回车为界限分隔，也可备注其他的分隔符号
+#### 5. split 用于分隔字符串生成列表，默认以空格 / 回车为界限分隔，也可备注其他的分隔符号
 
 ```python
 str = 'Hello world you'
@@ -556,7 +556,7 @@ print(stuff1)
 >>>['Hello', 'world', 'you']
 ```
 
-6. join 相当于 split 的反函数，用于将列表元素用分界符连接成字符串
+#### 6. join 相当于 split 的反函数，用于将列表元素用分界符连接成字符串
 
 ```python
 list = ['Hello', 'world', 'you']
@@ -567,7 +567,7 @@ print(result)
 >>>Hello-world-you
 ```
 
-7. all 在 list 中所有值为真时取 True
+#### 7. all 在 list 中所有值为真时取 True
 
 例如：
 
