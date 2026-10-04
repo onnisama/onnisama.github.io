@@ -526,6 +526,7 @@ img { max-width: 100%; height: auto; }
 .post-container table { display: block; width: 100%; max-width: 100%; margin: 1.7em 0; overflow-x: auto; border-collapse: collapse; font-size: 14px; }
 .post-container th, .post-container td { padding: 9px 12px; border: 1px solid var(--line); white-space: nowrap; }
 .post-container th { background: var(--paper-soft); }
+.post-container picture { display: block; }
 .post-container img { display: block; margin: 1.8em auto; border-radius: 7px; }
 .post-container hr { margin: 2.6em 0; border: 0; border-top: 1px dashed #cfcdc6; }
 .post-container li { margin-bottom: .35em; }
@@ -584,6 +585,11 @@ img { max-width: 100%; height: auto; }
 }
 .post-container .note-part-card strong,
 .post-container .note-part-card span { overflow-wrap: anywhere; }
+.notes-library { padding: 8px 0 14px; }
+.notes-series__head { display: flex; align-items: end; justify-content: space-between; gap: 24px; }
+.post-container .notes-series__head p { margin: 0 0 4px; color: var(--warm); font-size: 11px; font-weight: 700; letter-spacing: .08em; }
+.post-container .notes-series__head h2 { margin: 0; padding: 0; border: 0; font-size: 26px; }
+.notes-series__head > a { flex: 0 0 auto; padding-bottom: 4px; color: var(--accent); font-size: 13px; text-decoration: none; }
 .catalog-container { min-width: 0; }
 .side-catalog { position: sticky; top: 36px; padding-left: 14px; border-left: 1px solid var(--line); }
 .side-catalog h2 { margin: 0 0 12px; color: var(--muted); font-family: var(--sans); font-size: 11px; font-weight: 650; letter-spacing: .12em; }
@@ -599,6 +605,7 @@ img { max-width: 100%; height: auto; }
 .post-neighbors small { margin-bottom: 4px; color: var(--muted); font-size: 11px; }
 .post-neighbors span { font-family: var(--serif); font-size: 14px; }
 .post-neighbors__next { text-align: right; }
+.post-neighbors__next:only-child { grid-column: 2; }
 .comment { margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--line-soft); }
 .comment h2 { margin: 0 0 14px; font-size: 21px; }
 
@@ -990,8 +997,11 @@ img { max-width: 100%; height: auto; }
   .post-container .highlighter-rouge .highlight td.rouge-code pre { padding: 14px 12px 14px 12px; }
   .post-container .note-part-index { grid-template-columns: 1fr; gap: 12px; }
   .post-container .note-part-card { padding: 16px; }
+  .notes-series__head { display: block; }
+  .notes-series__head > a { display: inline-block; margin-top: 10px; }
   .post-neighbors { grid-template-columns: 1fr; }
   .post-neighbors__next { text-align: left; }
+  .post-neighbors__next:only-child { grid-column: 1; }
   .archive-tags { gap: 6px; padding: 20px 24px; }
   .archive-tags button { min-height: 40px; }
   .archive-list { padding: 24px 24px 38px; }

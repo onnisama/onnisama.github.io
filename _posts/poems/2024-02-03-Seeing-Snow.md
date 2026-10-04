@@ -1,6 +1,7 @@
 ---
 layout:       post
 title:        "诞日漫步览雪感怀"
+description:  "一首写于生日雪日漫步后的七言诗，记下冬日所见与当时的心绪。"
 author:       "雾汐(低配版)"
 header-style: text
 catalog:      true

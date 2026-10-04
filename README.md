@@ -42,3 +42,5 @@ npx grunt watch
 - `.ruby-version`、`Gemfile.lock` 和 `package-lock.json` 用于固定可复现的本地与 CI 依赖，请提交它们。
 - `.gitattributes` 统一文本文件为 LF 换行符，避免跨系统产生整文件“伪改动”。
 - GitHub Actions 使用与本地相同的 Ruby 3.2 基线。
+- 按时间发布的文章放在 `_posts/`；长期整理的学习笔记放在 `_notes/`，并通过 `series`、`chapter` 和 `part` 维护系列信息。
+- 笔记若已有公开网址，应在 front matter 中保留原 `permalink`，避免旧链接失效。

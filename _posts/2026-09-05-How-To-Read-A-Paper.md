@@ -1,6 +1,8 @@
 ---
 layout: post
 title: "如何读论文"
+description: "从选论文、三遍阅读法到英文阅读和笔记整理，记录一套适合科研新手逐步上手的论文阅读方法。"
+image: /img/How-To-Read-A-Paper/paper-overload.webp
 author: "雾汐"
 header-style: text
 catalog: true
@@ -49,7 +51,10 @@ tags:
 
 读论文本身就是一件格外耗费时间和精力的事情。除了坚持下去的勇气，我们还需要掌握一些技巧，才能尽量达到事半功倍的效果。
 
-![第一次面对复杂论文时有些手忙脚乱的 DeepSeek 娘](/img/How-To-Read-A-Paper/paper-overload.png)
+<picture>
+  <source srcset="/img/How-To-Read-A-Paper/paper-overload.webp" type="image/webp">
+  <img src="/img/How-To-Read-A-Paper/paper-overload.png" alt="第一次面对复杂论文时有些手忙脚乱的 DeepSeek 娘" width="1280" height="853" loading="lazy" decoding="async">
+</picture>
 
 于是乎，作为一名学术小白，笔者试图以李沐老师的[《如何读论文》](https://www.bilibili.com/video/BV1H44y1t75x/)视频为蓝本，结合自己的一些经验，写出这样一篇文章，以供大家参考。视频中提到的“三遍阅读法”源自 S. Keshav 的短文 [*How to Read a Paper*](https://doi.org/10.1145/1273445.1273458)。笔者主要阅读机器学习领域的论文，不过其他学科的论文大抵也有相似之处，大家可以以此文为蓝本，再结合自己的学习经验进行调整哦。（PS：由于本人也起步不久，若有纰漏，欢迎指出 QAQ）
 
@@ -59,7 +64,10 @@ tags:
 
 下图展示了论文的一般结构。不过，这种结构并非一成不变，而是会随学科、期刊和文章内容而调整。例如，有的论文会设置单独的 Discussion（讨论）章节，却不设置独立的 Conclusion（结论）；有的论文则会把 Limitations（局限性）单独列为一个章节。这些都不是重点，只要掌握大致的结构，知道去哪里寻找需要的信息即可。
 
-![论文的一般结构](/img/How-To-Read-A-Paper/structure-of-a-paper.png)
+<picture>
+  <source srcset="/img/How-To-Read-A-Paper/structure-of-a-paper.webp" type="image/webp">
+  <img src="/img/How-To-Read-A-Paper/structure-of-a-paper.png" alt="论文的一般结构" width="1280" height="717" loading="lazy" decoding="async">
+</picture>
 
 按照这种方法，我们大致可以把阅读分为三遍。必须注意的是，并非每篇论文都值得完整读上三遍。究竟读到哪一遍，应当取决于论文与你的研究问题有多相关，以及你希望从中获得什么。越重要、越相关的论文，越值得投入更多时间。至于每一遍具体该怎样读，将在下文提到。
 
@@ -103,7 +111,10 @@ tags:
 
 请注意：**不要“读附录”，而要“查附录”**。先在正文中发现问题，再带着问题去寻找对应章节，这样效率最高。
 
-![带着具体问题查找附录的 DeepSeek 娘](/img/How-To-Read-A-Paper/check-appendix.png)
+<picture>
+  <source srcset="/img/How-To-Read-A-Paper/check-appendix.webp" type="image/webp">
+  <img src="/img/How-To-Read-A-Paper/check-appendix.png" alt="带着具体问题查找附录的 DeepSeek 娘" width="1280" height="853" loading="lazy" decoding="async">
+</picture>
 
 ### 6.2 工具
 
@@ -121,13 +132,19 @@ tags:
 
 当然——最好的办法还是努力学好英语咯～（学好英语这辈子都不可能了啦 QAQ）
 
-![看到英文论文就头晕的 DeepSeek 娘](/img/How-To-Read-A-Paper/english-dizzy.png)
+<picture>
+  <source srcset="/img/How-To-Read-A-Paper/english-dizzy.webp" type="image/webp">
+  <img src="/img/How-To-Read-A-Paper/english-dizzy.png" alt="看到英文论文就头晕的 DeepSeek 娘" width="1280" height="853" loading="lazy" decoding="async">
+</picture>
 
 ## 7. 总结
 
 说到底，读论文并不是一开始就应当埋头苦读，从第一页坚持爬到最后一页，而是一个不断筛选、不断深入的过程。第一遍，我们判断“它值不值得读”；第二遍，我们弄清楚“它究竟做了什么”；第三遍，我们追问“它为什么这样做，以及做得是否可靠”。每读完一遍，都应该留下一个更加清晰的答案，而不是只在文献阅读量上默默加一。
 
-![鲸鱼娘老师用黑板总结三遍阅读法](/img/How-To-Read-A-Paper/reading-summary-teacher.png)
+<picture>
+  <source srcset="/img/How-To-Read-A-Paper/reading-summary-teacher.webp" type="image/webp">
+  <img src="/img/How-To-Read-A-Paper/reading-summary-teacher.png" alt="鲸鱼娘老师用黑板总结三遍阅读法" width="1280" height="853" loading="lazy" decoding="async">
+</picture>
 
 当然，三遍阅读法也不是必须严格执行的规章制度。无关紧要的论文，看完摘要和结论便可以潇洒离开；真正重要的论文，读上三遍之后也可能仍然需要反复查阅。最重要的始终不是“我今天读了几篇”，而是“这篇论文帮助我解决了什么问题，又给我留下了什么新的问题”。
 

@@ -1,6 +1,7 @@
 ---
 layout: post
 title: "Python 数据分析学习笔记"
+description: "整理 Pandas、Series、DataFrame 和常用数据处理方法，作为 Python 数据分析入门与复习笔记。"
 author: "雾汐"
 header-style: text
 catalog: true
@@ -265,4 +266,3 @@ dataframe.apply(remean_x, axis='columns')	# 指定为列，若 axis 为 index，
 - [菜鸟教程：Pandas 教程](https://www.runoob.com/pandas/pandas-tutorial.html)
 
 - [Kaggle](https://www.kaggle.com)
-

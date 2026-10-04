@@ -1,6 +1,7 @@
 ---
 layout: post
 title: "Python 学习笔记目录"
+description: "Python 学习笔记总目录，涵盖基础语法、函数、数据结构、模块、面向对象和错误处理等八个章节。"
 author: "雾汐"
 header-style: text
 catalog: true

@@ -1,0 +1,29 @@
+---
+layout: page
+title: "学习笔记"
+description: "按主题整理并持续补充的学习记录，适合查阅，也方便日后复习。"
+permalink: /notes/
+---
+
+<div class="post-container notes-library">
+  <section class="notes-series" aria-labelledby="python-notes-title">
+    <div class="notes-series__head">
+      <div>
+        <p>PYTHON · 8 章</p>
+        <h2 id="python-notes-title">Python 学习笔记</h2>
+      </div>
+      <a href="/2026/07/06/Python-Note/">查看总目录 <span aria-hidden="true">→</span></a>
+    </div>
+
+    <div class="note-part-index">
+      {% assign python_notes = site.notes | where: 'series', 'Python 学习笔记' | sort: 'part' %}
+      {% for note in python_notes %}
+      <a class="note-part-card" href="{{ note.url | prepend: site.baseurl }}">
+        <span class="note-part-number">({{ note.part }})</span>
+        <strong>{{ note.chapter }}</strong>
+        <span>{{ note.description }}</span>
+      </a>
+      {% endfor %}
+    </div>
+  </section>
+</div>

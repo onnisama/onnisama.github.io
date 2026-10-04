@@ -11,6 +11,18 @@ layout: default
             {{ content }}
 
             <nav class="post-neighbors" aria-label="相邻文章">
+                {% if page.collection == 'notes' %}
+                {% if page.note_previous_url %}
+                <a href="{{ page.note_previous_url | prepend: site.baseurl }}">
+                    <small>上一章</small><span>{{ page.note_previous_title }}</span>
+                </a>
+                {% endif %}
+                {% if page.note_next_url %}
+                <a class="post-neighbors__next" href="{{ page.note_next_url | prepend: site.baseurl }}">
+                    <small>下一章</small><span>{{ page.note_next_title }}</span>
+                </a>
+                {% endif %}
+                {% else %}
                 {% if page.previous.url %}
                 <a href="{{ page.previous.url | prepend: site.baseurl | replace: '//', '/' }}">
                     <small>上一篇</small><span>{{ page.previous.title }}</span>
@@ -21,6 +33,7 @@ layout: default
                     <small>下一篇</small><span>{{ page.next.title }}</span>
                 </a>
                 {% endif %}
+                {% endif %}
             </nav>
 
             {% if site.disqus_username %}
@@ -28,7 +41,7 @@ layout: default
                 <h2 id="comment-title">评论</h2>
                 <div id="disqus_thread" data-disqus-auto
                     data-shortname="{{ site.disqus_username }}"
-                    data-identifier="{{ page.id }}"
+                    data-identifier="{{ page.id | default: page.url }}"
                     data-url="{{ site.url }}{{ page.url }}"></div>
             </section>
             {% endif %}

@@ -1,6 +1,8 @@
 ---
 layout: post
 title: "我做了一个交互式 Diffusion 学习网站"
+description: "记录 Diffusion Field 的制作缘起和设计思路，看看交互与可视化怎样把扩散模型的公式和过程串起来。"
+image: https://raw.githubusercontent.com/onnisama/Diffusion_field/main/public/og.png
 author: "雾汐"
 header-style: text
 catalog: true

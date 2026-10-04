@@ -2,7 +2,7 @@
 layout: null
 ---
 [
-  {% assign search_documents = site.posts | concat: site.pages %}
+  {% assign search_documents = site.posts | concat: site.notes %}
   {% assign has_search_document = false %}
   {% for post in search_documents %}
     {% if post.layout == 'post' and post.title and post.url %}
@@ -10,6 +10,7 @@ layout: null
     {
       "title"   : {{ post.title | jsonify }},
       "tags"    : {{ post.tags | join: ', ' | jsonify }},
+      "type"    : {% if post.collection == 'notes' %}"note"{% else %}"post"{% endif %},
       "url"     : {{ post.url | prepend: site.baseurl | jsonify }},
       "date"    : {{ post.date | date_to_xmlschema | jsonify }},
       "content" : {{ post.content | strip_html | strip_newlines | jsonify }}

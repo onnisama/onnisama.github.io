@@ -9,6 +9,7 @@
   var root = document.getElementById('pjax-root');
   var stage = document.querySelector('.site-stage');
   var searchIndex = null;
+  var searchIndexPromise = null;
   var previousFocus = null;
   var activeNavigation = null;
   var navigationSerial = 0;
@@ -39,6 +40,7 @@
     previousFocus = document.activeElement;
     dialog.hidden = false;
     document.body.classList.add('search-is-open');
+    loadSearchIndex();
     window.setTimeout(function () { if (searchInput) searchInput.focus(); }, 20);
   }
 
@@ -83,6 +85,42 @@
     return snippet;
   }
 
+  function getSearchScore(item, keyword) {
+    var title = normalizeSearchText(item.title).toLowerCase();
+    var tags = normalizeSearchText(item.tags).toLowerCase();
+    var content = normalizeSearchText(item.content).toLowerCase();
+    var titlePosition = title.indexOf(keyword);
+    var tagPosition = tags.indexOf(keyword);
+    var contentPosition = content.indexOf(keyword);
+
+    if (titlePosition !== -1) return titlePosition;
+    if (tagPosition !== -1) return 100 + tagPosition;
+    return (item.type === 'note' ? 200 : 240) + Math.min(Math.max(contentPosition, 0) / 1000, 40);
+  }
+
+  function loadSearchIndex() {
+    if (searchIndex) return Promise.resolve(searchIndex);
+    if (searchIndexPromise) return searchIndexPromise;
+
+    searchIndexPromise = fetch('/search.json')
+      .then(function (response) {
+        if (!response.ok) throw new Error('HTTP ' + response.status);
+        return response.json();
+      })
+      .then(function (items) {
+        searchIndex = items;
+        renderResults(searchInput ? searchInput.value : '');
+        return items;
+      })
+      .catch(function () {
+        searchIndexPromise = null;
+        if (searchResults) searchResults.innerHTML = '<p class="search-hint">搜索暂时不可用，请稍后再试。</p>';
+        return [];
+      });
+
+    return searchIndexPromise;
+  }
+
   function renderResults(query) {
     if (!searchResults) return;
     var keyword = query.trim().toLowerCase();
@@ -96,6 +134,8 @@
     }
     var matches = searchIndex.filter(function (item) {
       return [item.title, item.tags, item.content].join(' ').toLowerCase().indexOf(keyword) !== -1;
+    }).sort(function (left, right) {
+      return getSearchScore(left, keyword) - getSearchScore(right, keyword);
     }).slice(0, 12);
     if (!matches.length) {
       searchResults.innerHTML = '<p class="search-hint">没有找到相关内容，换个关键词试试。</p>';
@@ -107,10 +147,6 @@
   }
 
   if (searchInput) {
-    fetch('/search.json')
-      .then(function (response) { return response.json(); })
-      .then(function (items) { searchIndex = items; renderResults(searchInput.value); })
-      .catch(function () { if (searchResults) searchResults.innerHTML = '<p class="search-hint">搜索暂时不可用，请稍后再试。</p>'; });
     searchInput.addEventListener('input', function () { renderResults(searchInput.value); });
   }
 
@@ -406,12 +442,33 @@
 
   function updateHead(nextDocument) {
     document.title = nextDocument.title;
-    ['meta[name="description"]', 'link[rel="canonical"]', 'meta[property="og:title"]', 'meta[property="og:description"]', 'meta[property="og:url"]'].forEach(function (selector) {
+    [
+      'meta[name="description"]',
+      'link[rel="canonical"]',
+      'meta[property="og:title"]',
+      'meta[property="og:description"]',
+      'meta[property="og:type"]',
+      'meta[property="og:image"]',
+      'meta[property="og:url"]',
+      'meta[property="article:published_time"]',
+      'meta[property="article:modified_time"]',
+      'meta[name="twitter:title"]',
+      'meta[name="twitter:description"]',
+      'meta[name="twitter:image"]'
+    ].forEach(function (selector) {
       var current = document.querySelector(selector);
       var next = nextDocument.querySelector(selector);
-      if (!next) return;
+      if (!next) {
+        if (current) current.remove();
+        return;
+      }
       if (current) current.replaceWith(next.cloneNode(true)); else document.head.appendChild(next.cloneNode(true));
     });
+
+    var currentStructuredData = document.getElementById('article-structured-data');
+    var nextStructuredData = nextDocument.getElementById('article-structured-data');
+    if (currentStructuredData) currentStructuredData.remove();
+    if (nextStructuredData) document.head.appendChild(nextStructuredData.cloneNode(true));
   }
 
   function executeScripts(scope) {

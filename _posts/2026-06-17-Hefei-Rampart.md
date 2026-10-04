@@ -1,6 +1,7 @@
 ---
 layout: post
 title: "合肥城墙"
+description: "从历史沿革和军事地位出发，梳理合肥城墙在近现代城市变迁中留下的痕迹与记忆。"
 author: "雾汐"
 header-style: text
 catalog: true

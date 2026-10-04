@@ -1,21 +1,35 @@
 <head>
+    {% assign seo_description = page.description %}
+    {% if seo_description == nil or seo_description == empty %}
+        {% assign seo_description = page.excerpt | strip_html | strip_newlines | truncate: 160 %}
+    {% endif %}
+    {% if seo_description == nil or seo_description == empty %}
+        {% assign seo_description = site.description %}
+    {% endif %}
+    {% assign seo_image = page.image | default: site.sidebar-avatar %}
+    {% if seo_image contains '://' %}
+        {% assign seo_image_url = seo_image %}
+    {% else %}
+        {% assign seo_image_url = seo_image | prepend: site.baseurl | prepend: site.url %}
+    {% endif %}
+    {% capture seo_title %}{% if page.url == '/' %}{{ site.SEOTitle }}{% elsif page.title %}{{ page.title }} - {{ site.SEOTitle }}{% else %}{{ site.SEOTitle }}{% endif %}{% endcapture %}
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-    <meta name="description" content="{{ site.description }}">
+    <meta name="description" content="{{ seo_description | escape }}">
     <meta name="keywords" content="{{ site.keyword }}">
     <meta name="theme-color" content="{{ site.chrome-tab-theme-color }}">
 
     <!-- Open Graph -->
-    <meta property="og:title"
-        content="{% if page.title %}{{ page.title }} - {{ site.SEOTitle }}{% else %}{{ site.SEOTitle }}{% endif %}">
+    <meta property="og:title" content="{{ seo_title | strip | escape }}">
     {% case page.layout %}
     {% when 'post' %}
     <meta property="og:type" content="article">
-    <meta property="og:description" content="{{ page.excerpt | strip_html | truncate:200 }}">
+    <meta property="og:description" content="{{ seo_description | escape }}">
     {% if page.date %}
-    <meta property="article:published_time" content="{{ page.date | date: " %Y-%m-%dT%H:%M:%SZ" }}">
+    <meta property="article:published_time" content="{{ page.date | date_to_xmlschema }}">
+    <meta property="article:modified_time" content="{{ page.last_modified_at | default: page.date | date_to_xmlschema }}">
     {% endif %}
     {% if page.author %}
     <meta property="article:author" content="{{ page.author }}">
@@ -26,17 +40,41 @@
     {% else %}
     <meta property="og:type" content="website">
     <meta property="og:description"
-        content="{% if page.description %}{{ page.description }}{% else %}{{ site.description }}{% endif %}">
+        content="{{ seo_description | escape }}">
     {% endcase %}
-    {% if site.sidebar-avatar contains '://' %}
-    <meta property="og:image" content="{{ site.sidebar-avatar }}">
-    {% else %}
-    <meta property="og:image" content="{{ site.url }}{{ site.sidebar-avatar }}">
-    {% endif %}
+    <meta property="og:image" content="{{ seo_image_url }}">
     <meta property="og:url" content="{{ site.url }}{{ page.url }}">
     <meta property="og:site_name" content="{{ site.SEOTitle }}">
 
-    <title>{% if page.title %}{{ page.title }} - {{ site.SEOTitle }}{% else %}{{ site.SEOTitle }}{% endif %}</title>
+    <meta name="twitter:card" content="{% if page.image %}summary_large_image{% else %}summary{% endif %}">
+    <meta name="twitter:title" content="{{ seo_title | strip | escape }}">
+    <meta name="twitter:description" content="{{ seo_description | escape }}">
+    <meta name="twitter:image" content="{{ seo_image_url }}">
+
+    {% if page.layout == 'post' %}
+    <script id="article-structured-data" type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "mainEntityOfPage": {{ page.url | prepend: site.baseurl | prepend: site.url | jsonify }},
+      "headline": {{ page.title | jsonify }},
+      "description": {{ seo_description | strip_html | jsonify }},
+      "datePublished": {{ page.date | date_to_xmlschema | jsonify }},
+      "dateModified": {{ page.last_modified_at | default: page.date | date_to_xmlschema | jsonify }},
+      "author": {
+        "@type": "Person",
+        "name": {{ page.author | default: site.title | jsonify }},
+        "url": {{ '/about/' | prepend: site.baseurl | prepend: site.url | jsonify }}
+      }{% if page.image %},
+      "image": {{ seo_image_url | jsonify }}{% endif %}
+    }
+    </script>
+    {% endif %}
+
+    <title>{{ seo_title | strip }}</title>
+
+    <!-- Feed discovery -->
+    <link rel="alternate" type="application/rss+xml" title="{{ site.title }}" href="{{ '/feed.xml' | prepend: site.baseurl | prepend: site.url }}">
 
     <!-- Web App Manifest -->
     <link rel="manifest" href="{{ site.baseurl }}/pwa/manifest.json">

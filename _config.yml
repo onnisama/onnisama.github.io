@@ -19,6 +19,10 @@ github_username: onnisama
 highlighter: rouge
 permalink: pretty
 paginate: 10
+collections:
+  notes:
+    output: true
+    permalink: /notes/:path/
 exclude:
   [
     ".agents",
